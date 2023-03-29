@@ -55,14 +55,15 @@ function gui1_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to gui1 (see VARARGIN)
 
-%Variables thetas en posición 0
-% theta1=0;
-% theta2=0;
-% theta3=0;
+%Variables thetas GLOBALES en posición 0
+[theta1, theta2, theta3] = setGlobal_thetas(0,0,0);
+%Para asignar valores o leer su valor se necesita: setGlobal_thetax y getGlobal_thetax 
+%La x siendo el numero de theta que se busca modificar
 
 % Choose default command line output for gui1
 handles.output = hObject;
-%guideset(handles.text1,'string','SUP -Vivi');
+%-------------------------------------posibles cosas de setup
+%set(handles.text1,'string','SUP -Vivi');
 %pause(1.0);
 %set(handles.text1,'string','HOLI UWU -Polo');
 % Update handles structure
@@ -128,14 +129,16 @@ valor_connect = get(handles.togglebutton1,'value');
 if valor_connect == 1
     %Generando la conexion al arduino
     %connect_ar = arduino('COM3'); %Checar el puerto al que se conecta el arduino
-    %device=serialport("COM3",9600); 
+    %Mandando la informacion a la variable global para poder tener una
+    %comunicacion serial desde todas las funciones de theta de la GUI
+    setGlobal_device(serialport("COM3",9600)); %---Si esto no jala, habra que generar la conexion en cada slider
     set(handles.togglebutton1,'BackgroundColor','green');
     set(handles.togglebutton1,'string','CONNECTED');
     set(handles.togglebutton1,'BackgroundColor','green');
     fprintf('Connected \n');  
 else
     %delete(instrfind({'Port'},{'COM4'}));
-    %clear device
+    clear device %---Si esto no jala, habra que apagar la conexion  luego de generarla en cada slider
     set(handles.togglebutton1,'BackgroundColor','red');
     set(handles.togglebutton1,'string','DISCONNECTED');
     fprintf('Disconnected \n');
@@ -285,15 +288,8 @@ function slider1_Callback(hObject, eventdata, handles)
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 slider1_val=get(hObject,'Value');
 a=slider1_val*300;
-%Limite superior- 180
-%Limite inferior- 0
-if(a>180)
-    %Agregar mensaje de error - POP UP
-    theta1=180;
-end
-theta1=a;
-
-%theta_array=strcat("<",int2str(theta1),",",int2str(theta2),",",int2str(theta3),">");
+setGlobal_theta1(a);
+theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
 
 
 % --- Executes during object creation, after setting all properties.
@@ -320,9 +316,8 @@ slider2_val=get(hObject,'Value');
 b=slider2_val*300;
 %Limite superior- 180
 %Limite inferior- 0
-theta2=b;
-
-%theta_array=strcat("<",int2str(theta1),",",int2str(theta2),",",int2str(theta3),">");
+setGlobal_theta2(b);
+theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
 
 % --- Executes during object creation, after setting all properties.
 function slider2_CreateFcn(hObject, eventdata, handles)
@@ -348,9 +343,8 @@ slider3_val=get(hObject,'Value');
 c=slider3_val*180;
 %Limite superior- 180
 %Limite inferior- 0
-theta3=c
-
-%theta_array=strcat("<",int2str(theta1),",",int2str(theta2),",",int2str(theta3),">");
+setGlobal_theta3(c);
+theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
 
 % %-----------------MANDA DATO---------------
 % %reads until it gets the new line character 
