@@ -177,7 +177,24 @@ function pushbutton10_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
-%---------------------------MANDAR LOS datos-----------------------
+% %-----------------MANDA DATO---------------
+% %reads until it gets the new line character 
+% configureTerminator(device,"LF") 
+% disp("Reading Starting Message from Arduino") 
+% while device.NumBytesAvailable ~= 0 
+%     disp(readline(device)) 
+% end 
+% pause(1.0) 
+% writeline(device,theta_array) 
+% %reads until it gets the new line character 
+% configureTerminator(device,"LF") 
+% disp("Reading Message from Arduino") 
+% while device.NumBytesAvailable ~= 0 
+%     disp(readline(device)) 
+% end 
+% pause(1.0) 
+%-------------------------------------------
+
 %Aplicar los angulos en la funcion pa resolver DH
 set(handles.text1,'string','Resultado X');
 %pause(1);
@@ -275,7 +292,24 @@ slider1_val=get(hObject,'Value');
 a=slider1_val*300;
 setGlobal_theta1(a);
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
-%---------------------------MANDAR EL DATO-----------------------
+% %-----------------MANDA DATO---------------
+% %reads until it gets the new line character 
+% configureTerminator(device,"LF") 
+% disp("Reading Starting Message from Arduino") 
+% while device.NumBytesAvailable ~= 0 
+%     disp(readline(device)) 
+% end 
+%pause(1)
+% writeline(device,theta_array) 
+% %reads until it gets the new line character 
+% configureTerminator(device,"LF") 
+% disp("Reading Message from Arduino") 
+% while device.NumBytesAvailable ~= 0 
+%     disp(readline(device)) 
+% end 
+% pause(1.0) 
+%-------------------------------------------
+
 %Aplicar el la funcion pa resolver DH
 set(handles.text1,'string','Resultado X');
 
@@ -307,7 +341,25 @@ b=slider2_val*300;
 %Limite inferior- 0
 setGlobal_theta2(b);
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
-%---------------------------MANDAR EL DATO-----------------------
+
+% %-----------------MANDA DATO---------------
+% %reads until it gets the new line character 
+% configureTerminator(device,"LF") 
+% disp("Reading Starting Message from Arduino") 
+% while device.NumBytesAvailable ~= 0 
+%     disp(readline(device)) 
+% end 
+% pause(1.0)
+% writeline(device,theta_array) 
+% %reads until it gets the new line character 
+% configureTerminator(device,"LF") 
+% disp("Reading Message from Arduino") 
+% while device.NumBytesAvailable ~= 0 
+%     disp(readline(device)) 
+% end 
+% pause(1.0) 
+%-------------------------------------------
+
 %Aplicar el la funcion pa resolver DH
 set(handles.text2,'string','Resultado Y');
 
@@ -348,9 +400,6 @@ set(handles.text3,'string','Resultado Z');
 % while device.NumBytesAvailable ~= 0 
 %     disp(readline(device)) 
 % end 
-% pause(1.0) 
-% %write the string of data to the Arduino 
-% theta_array=strcat("<",int2str(theta1),",",int2str(theta2),",",int2str(theta3),">") 
 % pause(1.0) 
 % writeline(device,theta_array) 
 % %reads until it gets the new line character 
