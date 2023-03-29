@@ -14,9 +14,9 @@ char tempChars[numChars];        // temporary array for use when parsing
  
 
 // variables to hold the parsed data 
-int theta1 = 0; 
-int theta2 = 0; 
-int theta3 = 0; 
+int theta1=0; 
+int theta2=0; 
+int theta3=0; 
 
  
 
@@ -64,7 +64,15 @@ void loop(){
         //--posible cambio moveServo(theta1); moveServo(theta2); moveServo(theta3);
         moveServo(theta1, theta2, theta3); 
         newData = false; 
-    } 
+        //For debugging
+       // delay(4000); // Para esperar a que el puerto se desocupe y poder usar el serial monitor justo despues
+        // showParsedData();
+    }
+     //For debugging
+     //delay(4000); //Tienes que ser flash, mandar el dato y luego luego abrir el serial monitor lol 
+     // - en caso se no poder probarlo con motores
+     //showParsedData();  
+    
 } 
 
 //============ 
@@ -131,7 +139,19 @@ void showParsedData() {
 
 void moveServo(int angle1, int angle2, int angle3) { 
   //Angle must be a value between 0 and 1023 (0°-300°)
+  //Cambio de grados a posiciones:
+  int anglee1= angle1 * 1023/300;
+  int anglee2= angle2 * 1023/300;
+  int anglee3= angle3 * 1023/300;
   Dynamixel.move(ID_theta1,angle1);  // Move the Servo(ID), to 0° = 0 
   Dynamixel.move(ID_theta2,angle2);  // Move the Servo(ID), to 0° = 0 
   Dynamixel.move(ID_theta3,angle3);  // Move the Servo(ID), to 0° = 0 
+
+  //Pa debuggear---- que sí se haga la conversión
+    Serial.print("theta1 en posicion: "); 
+    Serial.println(anglee1); 
+    Serial.print("theta2 en posicion: "); 
+    Serial.println(anglee2); 
+    Serial.print("theta3 en posicion: "); 
+    Serial.println(anglee3);
 } 
