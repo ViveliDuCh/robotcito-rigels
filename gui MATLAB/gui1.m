@@ -22,7 +22,7 @@ function varargout = gui1(varargin)
 
 % Edit the above text to modify the response to help gui1
 
-% Last Modified by GUIDE v2.5 28-Mar-2023 18:44:30
+% Last Modified by GUIDE v2.5 29-Mar-2023 00:38:13
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -58,14 +58,16 @@ function gui1_OpeningFcn(hObject, eventdata, handles, varargin)
 %Variables thetas GLOBALES en posición 0
 [theta1, theta2, theta3] = setGlobal_thetas(0,0,0);
 %Para asignar valores o leer su valor se necesita: setGlobal_thetax y getGlobal_thetax 
-%La x siendo el numero de theta que se busca modificar
+%La x siendo el numero de theta que se busca modificar 
+% Disclaimer ----- se puede usar global normal y puro
+global device;
 
 % Choose default command line output for gui1
 handles.output = hObject;
 %-------------------------------------posibles cosas de setup
-%set(handles.text1,'string','SUP -Vivi');
-%pause(1.0);
-%set(handles.text1,'string','HOLI UWU -Polo');
+set(handles.text1,'string','0');
+set(handles.text2,'string','0');
+set(handles.text3,'string','0');
 % Update handles structure
 guidata(hObject, handles);
 
@@ -83,40 +85,6 @@ function varargout = gui1_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-%ARRIBA
-% --- Executes on button press in pushbutton1.
-function pushbutton1_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-fprintf('Arriba\n'); %Aqui se sumaria a la variable que lleva los grados de movimiento (0-300)
-
-%ABAJO
-% --- Executes on button press in pushbutton2.
-function pushbutton2_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-fprintf('Abajo\n');
-
-%IZQUIERDA
-% --- Executes on button press in pushbutton3.
-function pushbutton3_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton3 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-fprintf('Izquierda\n');
-
-%DERECHA
-% --- Executes on button press in pushbutton4.
-function pushbutton4_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton4 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-fprintf('Derecha\n');
-
-
 % --- Executes on button press in togglebutton1.
 function togglebutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to togglebutton1 (see GCBO)
@@ -131,7 +99,7 @@ if valor_connect == 1
     %connect_ar = arduino('COM3'); %Checar el puerto al que se conecta el arduino
     %Mandando la informacion a la variable global para poder tener una
     %comunicacion serial desde todas las funciones de theta de la GUI
-    setGlobal_device(serialport("COM3",9600)); %---Si esto no jala, habra que generar la conexion en cada slider
+    device = serialport("COM3",9600); %---Si esto no jala, habra que generar la conexion en cada slider
     set(handles.togglebutton1,'BackgroundColor','green');
     set(handles.togglebutton1,'string','CONNECTED');
     set(handles.togglebutton1,'BackgroundColor','green');
@@ -165,18 +133,32 @@ function axes1_CreateFcn(hObject, eventdata, handles)
 
 
 
-function edit1_Callback(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
+function edit2_Callback(hObject, eventdata, handles)
+% hObject    handle to edit2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit1 as text
-%        str2double(get(hObject,'String')) returns contents of edit1 as a double
+% Hints: get(hObject,'String') returns contents of edit2 as text
 
+%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+%------------NOTA: Aqui no se manda el dato porque 
+% -------------lo mandas al presionar MOVE, entonces la instruccion
+%---------------de mandarlo va ahi
+%setGlobal_theta1( str2double(get(hObject,'String')));
+temp2 = str2double(get(hObject,'String'));
+%limite superior
+limit2 = 180.0;
+if temp2 > limit2 %checar limite inferior
+    %mensaje de error
+    setGlobal_theta2(limit2); %Aqui debemos decidir si lo mantenemos en 180 o solo mandamos error
+else
+    setGlobal_theta2(temp2);
+end
+%r = getGlobal_theta2
 
 % --- Executes during object creation, after setting all properties.
-function edit1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
+function edit2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -188,11 +170,19 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in pushbutton10.
+
+% --- Executes on button press in pushbutton10. ------ MOVE button
 function pushbutton10_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton10 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
+%---------------------------MANDAR LOS datos-----------------------
+%Aplicar los angulos en la funcion pa resolver DH
+set(handles.text1,'string','Resultado X');
+%pause(1);
+set(handles.text2,'string','Resultado Y');
+set(handles.text3,'string','Resultado Z');
 
 
 % --- Executes on button press in pushbutton8.
@@ -210,36 +200,23 @@ function pushbutton9_Callback(hObject, eventdata, handles)
 
 
 
-function edit4_Callback(hObject, eventdata, handles)
-% hObject    handle to edit4 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit4 as text
-%        str2double(get(hObject,'String')) returns contents of edit4 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit4_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit4 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
 function edit3_Callback(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
+% hObject    handle to edit2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit3 as text
-%        str2double(get(hObject,'String')) returns contents of edit3 as a double
+% Hints: get(hObject,'String') returns contents of edit2 as text
+%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+temp3 = str2double(get(hObject,'String'));
+%limite superior
+limit3 = 180.0;
+if temp3 > limit3 %checar limite inferior
+    %mensaje de error
+    setGlobal_theta3(limit3); %Aqui debemos decidir si lo mantenemos en 180 o solo mandamos error
+else
+    setGlobal_theta3(temp3);
+end
+%r = getGlobal_theta3
 
 
 % --- Executes during object creation, after setting all properties.
@@ -255,19 +232,28 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-
-function edit2_Callback(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
+function edit1_Callback(hObject, eventdata, handles)
+% hObject    handle to edit1(see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit2 as text
-%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+% Hints: get(hObject,'String') returns contents of edit1 as text
+%        str2double(get(hObject,'String')) returns contents of edit1 as a double
+temp1 = str2double(get(hObject,'String'));
+%limite superior
+limit1 = 180.0;
+if temp1 > limit1 %checar limite inferior
+    %mensaje de error
+    setGlobal_theta1(limit1); %Aqui debemos decidir si lo mantenemos en 180 o solo mandamos error
+else
+    setGlobal_theta1(temp1);
+end
+%r = getGlobal_theta1
 
 
 % --- Executes during object creation, after setting all properties.
-function edit2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
+function edit1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -276,7 +262,6 @@ function edit2_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 % --- Executes on slider movement.
 function slider1_Callback(hObject, eventdata, handles)
@@ -290,6 +275,10 @@ slider1_val=get(hObject,'Value');
 a=slider1_val*300;
 setGlobal_theta1(a);
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
+%---------------------------MANDAR EL DATO-----------------------
+%Aplicar el la funcion pa resolver DH
+set(handles.text1,'string','Resultado X');
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -318,6 +307,9 @@ b=slider2_val*300;
 %Limite inferior- 0
 setGlobal_theta2(b);
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
+%---------------------------MANDAR EL DATO-----------------------
+%Aplicar el la funcion pa resolver DH
+set(handles.text2,'string','Resultado Y');
 
 % --- Executes during object creation, after setting all properties.
 function slider2_CreateFcn(hObject, eventdata, handles)
@@ -345,6 +337,9 @@ c=slider3_val*180;
 %Limite inferior- 0
 setGlobal_theta3(c);
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
+%---------------------------MANDAR EL DATO-----------------------
+%Aplicar el la funcion pa resolver DH
+set(handles.text3,'string','Resultado Z');
 
 % %-----------------MANDA DATO---------------
 % %reads until it gets the new line character 
