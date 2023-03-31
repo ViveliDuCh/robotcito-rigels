@@ -58,6 +58,13 @@ function gui1_OpeningFcn(hObject, eventdata, handles, varargin)
 %-------------------------------------Datos iniciales
 %Variables thetas GLOBALES en posición 0
 [theta1, theta2, theta3] = setGlobal_thetas(0,0,0);
+device=serialport("COM4",9600); 
+pause(1.0) 
+theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
+writeline(device,theta_array) 
+pause(1.0) 
+clear device
+
 %Para asignar valores o leer su valor se necesita: setGlobal_thetax y getGlobal_thetax 
 %La x siendo el numero de theta que se busca modificar 
 
@@ -66,7 +73,7 @@ function gui1_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 
 %Funcion pa resolver el DH de nuestro robot
-[T,MP,MI] = GENDGM([0 0 0],[0 5 4],[pi/2 0 0],[6 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
 %Posiciones iniciales con thetas = 0
 set(handles.text1,'string',T(13));
 set(handles.text2,'string',T(14));
@@ -193,26 +200,26 @@ pause(2.0)
 %-----------------LEE DATO RECIBIDO POR EL ARDUINO------
 %-------------debug 1----------------------
 %reads until it gets the new line character 
-configureTerminator(device,"LF") 
-disp("Los grados que recibe el Arduino") 
-while device.NumBytesAvailable ~= 0 
-    disp(readline(device)) 
-end 
-pause(2.0) 
-%-------------------------------------------
-%-------------debug 2----------------------
-%reads until it gets the new line character 
-configureTerminator(device,"LF") 
-disp("Posiciones que recibe el Arduino:") 
-while device.NumBytesAvailable ~= 0 
-    disp(readline(device)) 
-end 
-pause(1.0) 
+% configureTerminator(device,"LF") 
+% disp("Los grados que recibe el Arduino") 
+% while device.NumBytesAvailable ~= 0 
+%     disp(readline(device)) 
+% end 
+% pause(2.0) 
+% %-------------------------------------------
+% %-------------debug 2----------------------
+% %reads until it gets the new line character 
+% configureTerminator(device,"LF") 
+% disp("Posiciones que recibe el Arduino:") 
+% while device.NumBytesAvailable ~= 0 
+%     disp(readline(device)) 
+% end 
+% pause(1.0) 
 %-------------------------------------------
 clear device
 
 %Funcion pa resolver el DH de nuestro robot
-[T,MP,MI] = GENDGM([0 0 0],[0 88.1 93.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
 %Posiciones iniciales con thetas = 0
 set(handles.text1,'string',T(13));
 set(handles.text2,'string',T(14));
@@ -335,28 +342,28 @@ pause(2.0)
 %-----------------LEE DATO RECIBIDO POR EL ARDUINO------
 %-------------debug 1----------------------
 %reads until it gets the new line character 
-configureTerminator(device,"LF") 
-disp("Los grados que recibe el Arduino") 
-while device.NumBytesAvailable ~= 0 
-    disp(readline(device)) 
-end 
-pause(2.0) 
-%-------------------------------------------
-%-------------debug 2----------------------
-%reads until it gets the new line character 
-configureTerminator(device,"LF") 
-disp("Posiciones que recibe el Arduino:") 
-while device.NumBytesAvailable ~= 0 
-    disp(readline(device)) 
-end 
-pause(1.0) 
+% configureTerminator(device,"LF") 
+% disp("Los grados que recibe el Arduino") 
+% while device.NumBytesAvailable ~= 0 
+%     disp(readline(device)) 
+% end 
+% pause(2.0) 
+% %-------------------------------------------
+% %-------------debug 2----------------------
+% %reads until it gets the new line character 
+% configureTerminator(device,"LF") 
+% disp("Posiciones que recibe el Arduino:") 
+% while device.NumBytesAvailable ~= 0 
+%     disp(readline(device)) 
+% end 
+% pause(1.0) 
 %-------------------------------------------
 %Terminando conexion 
 clear device
 
 %Funcion pa resolver el DH de nuestro robot
 %[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
-[T,MP,MI] = GENDGM([0 0 0],[0 88.1 93.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
 %Resultado coordenada X
 %en la posición 13 de la matriz T4x4 vista como un arreglo lineal
 set(handles.text1,'string',T(13));
@@ -402,28 +409,28 @@ pause(2.0)
 %-----------------LEE DATO RECIBIDO POR EL ARDUINO------
 %-------------debug 1----------------------
 %reads until it gets the new line character 
-configureTerminator(device,"LF") 
-disp("Los grados que recibe el Arduino") 
-while device.NumBytesAvailable ~= 0 
-    disp(readline(device)) 
-end 
-pause(2.0) 
-%-------------------------------------------
-%-------------debug 2----------------------
-%reads until it gets the new line character 
-configureTerminator(device,"LF") 
-disp("Posiciones que recibe el Arduino:") 
-while device.NumBytesAvailable ~= 0 
-    disp(readline(device)) 
-end 
-pause(1.0) 
+% configureTerminator(device,"LF") 
+% disp("Los grados que recibe el Arduino") 
+% while device.NumBytesAvailable ~= 0 
+%     disp(readline(device)) 
+% end 
+% pause(2.0) 
+% %-------------------------------------------
+% %-------------debug 2----------------------
+% %reads until it gets the new line character 
+% configureTerminator(device,"LF") 
+% disp("Posiciones que recibe el Arduino:") 
+% while device.NumBytesAvailable ~= 0 
+%     disp(readline(device)) 
+% end 
+% pause(1.0) 
 %-------------------------------------------
 %Terminando comunicación
 clear device
 
 %Funcion pa resolver el DH de nuestro robot
 %[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
-[T,MP,MI] = GENDGM([0 0 0],[0 88.1 93.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
 %Resultado coordenada Y
 %en la posición 14 de la matriz T4x4 vista como un arreglo lineal
 set(handles.text2,'string',T(14));
@@ -468,19 +475,19 @@ writeline(device,theta_array)
 pause(1.0) 
 %-----------------LEE DATO RECIBIDO POR EL ARDUINO------
 %reads until it gets the new line character 
-configureTerminator(device,"LF") 
-disp("Reading Message from Arduino") 
-while device.NumBytesAvailable ~= 0 
-    disp(readline(device)) 
-end 
-pause(1.0) 
+% configureTerminator(device,"LF") 
+% disp("Reading Message from Arduino") 
+% while device.NumBytesAvailable ~= 0 
+%     disp(readline(device)) 
+% end 
+% pause(1.0) 
 %-------------------------------------------
 %Terminando conexion 
 clear device
 
 %Funcion pa resolver el DH de nuestro robot
 %[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
-[T,MP,MI] = GENDGM([0 0 0],[0 88.1 93.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
 %Resultado coordenada Z
 %en la posición 15 de la matriz T4x4 vista como un arreglo lineal
 set(handles.text3,'string',T(15));
