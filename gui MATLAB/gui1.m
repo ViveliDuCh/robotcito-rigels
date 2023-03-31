@@ -177,7 +177,7 @@ function pushbutton10_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-device=serialport("COM5",9600); 
+device=serialport("COM4",9600); 
 pause(1.0) 
 %-----------------------ESCRIBE------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
@@ -234,7 +234,7 @@ function edit3_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of edit2 as a double
 temp3 = str2double(get(hObject,'String'));
 %limite superior
-limit3 = 180.0;
+limit3 = 90.0;
 if temp3 > limit3 %checar limite inferior
     %mensaje de error
     setGlobal_theta3(limit3); %Aqui debemos decidir si lo mantenemos en 180 o solo mandamos error
@@ -301,7 +301,7 @@ a=slider1_val*180;
 setGlobal_theta1(a);
 
 %start the serial communication 
-device=serialport("COM5",9600); 
+device=serialport("COM4",9600); 
 pause(1.0) 
 %--------------------------MANDA DATO------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
@@ -363,7 +363,7 @@ b=slider2_val*90;
 setGlobal_theta2(b);
 
 %start the serial communication 
-device=serialport("COM5",9600);
+device=serialport("COM4",9600);
 pause(1.0)
 %-----------------Escribe------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
@@ -417,13 +417,13 @@ function slider3_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 slider3_val=get(hObject,'Value');
-c=slider3_val*180;
-%Limite superior- 180
+c=slider3_val*90;
+%Limite superior- 90
 %Limite inferior- 0
 setGlobal_theta3(c);
 %---------------------------MANDAR EL DATO-----------------------
 %start the serial communication 
-device=serialport("COM5",9600); 
+device=serialport("COM4",9600); 
 pause(1.0) 
 %--------------------------MANDA DATO------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
