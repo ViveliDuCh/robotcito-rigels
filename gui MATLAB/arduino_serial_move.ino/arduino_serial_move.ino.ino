@@ -22,6 +22,7 @@ int theta3=0;
 
 
 boolean newData = false; 
+boolean checker = true;
 
  
 
@@ -71,7 +72,13 @@ void loop(){
      //For debugging
      //delay(4000); //Tienes que ser flash, mandar el dato y luego luego abrir el serial monitor lol 
      // - en caso se no poder probarlo con motores
-     //showParsedData();  
+     //showParsedData();
+     if (checker == true){
+        Serial.println(theta1); 
+        Serial.println(theta2); 
+        Serial.println(theta3);
+        checker = false;
+      }  
     
 } 
 

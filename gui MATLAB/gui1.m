@@ -176,24 +176,29 @@ function pushbutton10_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton10 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+device=serialport("COM5",9600); 
+%----------------Comunicacion con Arduino---------------
+%reads until it gets the new line character 
+configureTerminator(device,"LF") 
+disp("Reading Starting Message from Arduino") 
+while device.NumBytesAvailable ~= 0 
+    disp(readline(device)) 
+end 
+pause(1.0) 
+%----------------------------------------------------ESCRIBE----
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
-% %-----------------MANDA DATO---------------
-% %reads until it gets the new line character 
-% configureTerminator(device,"LF") 
-% disp("Reading Starting Message from Arduino") 
-% while device.NumBytesAvailable ~= 0 
-%     disp(readline(device)) 
-% end 
-% pause(1.0) 
-% writeline(device,theta_array) 
-% %reads until it gets the new line character 
-% configureTerminator(device,"LF") 
-% disp("Reading Message from Arduino") 
-% while device.NumBytesAvailable ~= 0 
-%     disp(readline(device)) 
-% end 
-% pause(1.0) 
+writeline(device,theta_array) 
+pause(1.0) 
+%reads until it gets the new line character 
+configureTerminator(device,"LF") 
+disp("Reading Message from Arduino") 
+while device.NumBytesAvailable ~= 0 
+    disp(readline(device)) 
+end 
+pause(1.0)
 %-------------------------------------------
+clear device
 
 %Aplicar los angulos en la funcion pa resolver DH
 set(handles.text1,'string','Resultado X');
@@ -291,8 +296,6 @@ function slider1_Callback(hObject, eventdata, handles)
 slider1_val=get(hObject,'Value');
 a=slider1_val*300;
 setGlobal_theta1(a);
-theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
-pause(1.0);
 
 %start the serial communication 
 device=serialport("COM5",9600); 
@@ -304,9 +307,12 @@ while device.NumBytesAvailable ~= 0
     disp(readline(device)) 
 end 
 pause(1)
-
+%--------------------------------ESCRIBE
+theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
+pause(1.0);
 %-------------Manda thetas_array
 writeline(device,theta_array) 
+%----------------------------------LEE
 %reads until it gets the new line character 
 configureTerminator(device,"LF") 
 disp("Reading Message from Arduino") 
@@ -348,11 +354,10 @@ b=slider2_val*300;
 %Limite superior- 180
 %Limite inferior- 0
 setGlobal_theta2(b);
-theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
 
 %start the serial communication 
 device=serialport("COM5",9600);
-%-----------------MANDA DATO---------------
+%-----------------COMUNICACION CON ARDUNIO---------------
 %reads until it gets the new line character 
 configureTerminator(device,"LF") 
 disp("Reading Starting Message from Arduino") 
@@ -360,7 +365,8 @@ while device.NumBytesAvailable ~= 0
     disp(readline(device)) 
 end 
 pause(1.0)
-
+%--------------escribe
+theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
 %Manda array_theta a Arduino
 writeline(device,theta_array) 
 %reads until it gets the new line character 
@@ -402,14 +408,13 @@ c=slider3_val*180;
 %Limite superior- 180
 %Limite inferior- 0
 setGlobal_theta3(c);
-theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
 %---------------------------MANDAR EL DATO-----------------------
 %Aplicar el la funcion pa resolver DH
 set(handles.text3,'string','Resultado Z');
 
 %start the serial communication 
 device=serialport("COM5",9600);
-%-----------------MANDA DATO---------------
+%-----------------LEE INFO INICIAL DEL ARDUINO---------------
 %reads until it gets the new line character 
 configureTerminator(device,"LF") 
 disp("Reading Starting Message from Arduino") 
@@ -417,9 +422,10 @@ while device.NumBytesAvailable ~= 0
     disp(readline(device)) 
 end 
 pause(1.0) 
-
+theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
 %------------------Manda array_theta
 writeline(device,theta_array) 
+%Vuelve a leer
 %reads until it gets the new line character 
 configureTerminator(device,"LF") 
 disp("Reading Message from Arduino") 
