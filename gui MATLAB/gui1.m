@@ -55,19 +55,24 @@ function gui1_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to gui1 (see VARARGIN)
 
+%-------------------------------------Datos iniciales
 %Variables thetas GLOBALES en posición 0
 [theta1, theta2, theta3] = setGlobal_thetas(0,0,0);
 %Para asignar valores o leer su valor se necesita: setGlobal_thetax y getGlobal_thetax 
 %La x siendo el numero de theta que se busca modificar 
-% Disclaimer ----- se puede usar global normal y puro
-%global device;
+
 
 % Choose default command line output for gui1
 handles.output = hObject;
-%-------------------------------------posibles cosas de setup
-set(handles.text1,'string','0');
-set(handles.text2,'string','0');
-set(handles.text3,'string','0');
+
+%Funcion pa resolver el DH de nuestro robot
+[T,MP,MI] = GENDGM([0 0 0],[0 5 4],[pi/2 0 0],[6 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+%Posiciones iniciales con thetas = 0
+set(handles.text1,'string',T(13));
+set(handles.text2,'string',T(14));
+set(handles.text3,'string',T(15));
+pause(1.0)
+
 % Update handles structure
 guidata(hObject, handles);
 
@@ -154,6 +159,8 @@ if temp2 > limit2 %checar limite inferior
 else
     setGlobal_theta2(temp2);
 end
+%Para cambiar graficamente el slider
+set(handles.slider2,'Value',getGlobal_theta2/limit2);
 %r = getGlobal_theta2
 
 % --- Executes during object creation, after setting all properties.
@@ -204,10 +211,13 @@ pause(1.0)
 %-------------------------------------------
 clear device
 
-%******AQUI***** aplicar el la funcion pa resolver DH
-set(handles.text1,'string','Resultado X');
-set(handles.text2,'string','Resultado Y');
-set(handles.text3,'string','Resultado Z');
+%Funcion pa resolver el DH de nuestro robot
+[T,MP,MI] = GENDGM([0 0 0],[0 88.1 93.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+%Posiciones iniciales con thetas = 0
+set(handles.text1,'string',T(13));
+set(handles.text2,'string',T(14));
+set(handles.text3,'string',T(15));
+pause(1.0)
 
 
 % --- Executes on button press in pushbutton8.
@@ -241,6 +251,8 @@ if temp3 > limit3 %checar limite inferior
 else
     setGlobal_theta3(temp3);
 end
+%Para cambiar graficamente el slider
+set(handles.slider3,'Value',getGlobal_theta3/limit3);
 %r = getGlobal_theta3
 
 
@@ -273,7 +285,8 @@ if temp1 > limit1 %checar limite inferior
 else
     setGlobal_theta1(temp1);
 end
-%r = getGlobal_theta1
+%Para cambiar graficamente el slider
+set(handles.slider1,'Value',getGlobal_theta1/limit1);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -297,10 +310,20 @@ function slider1_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 slider1_val=get(hObject,'Value');
-a=slider1_val*180;
-setGlobal_theta1(a);
-
-%start the serial communication 
+%Es relativo porque cada que se cambia el valor desde las cajitas de texto, se modifica el valor actual del slider
+temp1=slider1_val*180; 
+%limite superior
+limit1 = 180.0;
+%Approach uno pa limitar, aunque es suficiente con multiplicar la verdad
+if temp1 > limit1 %checar limite inferior
+    %mensaje de error
+    setGlobal_theta1(limit1); %Aqui debemos decidir si lo mantenemos en 180 o solo mandamos error
+else
+    setGlobal_theta1(temp1);
+end
+%Actualiza graficamente el cuadro de texto de theta1
+set(handles.edit1,'string',getGlobal_theta1);
+%--------------------Start the serial communication 
 device=serialport("COM4",9600); 
 pause(1.0) 
 %--------------------------MANDA DATO------------------
@@ -331,8 +354,13 @@ pause(1.0)
 %Terminando conexion 
 clear device
 
-%******AQUI***** aplicar el la funcion pa resolver DH
-set(handles.text1,'string','Resultado X');
+%Funcion pa resolver el DH de nuestro robot
+%[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T,MP,MI] = GENDGM([0 0 0],[0 88.1 93.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+%Resultado coordenada X
+%en la posición 13 de la matriz T4x4 vista como un arreglo lineal
+set(handles.text1,'string',T(13));
+pause(1.0)
 
 
 
@@ -361,7 +389,8 @@ b=slider2_val*90;
 %Limite superior- 90
 %Limite inferior- 0
 setGlobal_theta2(b);
-
+%Actualiza graficamente el cuadro de texto de theta2
+set(handles.edit2,'string',getGlobal_theta2);
 %start the serial communication 
 device=serialport("COM4",9600);
 pause(1.0)
@@ -392,9 +421,13 @@ pause(1.0)
 %Terminando comunicación
 clear device
 
-%******AQUI***** aplicar el la funcion pa resolver DH
-%------------Aquí se imprime el valor de Y
-set(handles.text2,'string','Resultado Y');
+%Funcion pa resolver el DH de nuestro robot
+%[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T,MP,MI] = GENDGM([0 0 0],[0 88.1 93.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+%Resultado coordenada Y
+%en la posición 14 de la matriz T4x4 vista como un arreglo lineal
+set(handles.text2,'string',T(14));
+pause(1.0)
 
 % --- Executes during object creation, after setting all properties.
 function slider2_CreateFcn(hObject, eventdata, handles)
@@ -421,6 +454,8 @@ c=slider3_val*90;
 %Limite superior- 90
 %Limite inferior- 0
 setGlobal_theta3(c);
+%Actualiza graficamente el cuadro de texto de theta1
+set(handles.edit3,'string',getGlobal_theta3);
 %---------------------------MANDAR EL DATO-----------------------
 %start the serial communication 
 device=serialport("COM4",9600); 
@@ -443,8 +478,13 @@ pause(1.0)
 %Terminando conexion 
 clear device
 
-%******AQUI***** aplicar el la funcion pa resolver DH
-set(handles.text3,'string','Resultado Z');
+%Funcion pa resolver el DH de nuestro robot
+%[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T,MP,MI] = GENDGM([0 0 0],[0 88.1 93.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+%Resultado coordenada Z
+%en la posición 15 de la matriz T4x4 vista como un arreglo lineal
+set(handles.text3,'string',T(15));
+pause(1.0)
 
 % --- Executes during object creation, after setting all properties.
 function slider3_CreateFcn(hObject, eventdata, handles)

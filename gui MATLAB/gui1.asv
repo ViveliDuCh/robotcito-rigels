@@ -65,6 +65,12 @@ function gui1_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for gui1
 handles.output = hObject;
 %-------------------------------------posibles cosas de setup
+%Funcion pa resolver el DH de nuestro robot
+[T,MP,MI] = GENDGM([0 0 0],[0 5 4],[pi/2 0 0],[6 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+%Resultado coordenada X
+%en la posición 13 de la matriz T4x4 vista como un arreglo lineal
+set(handles.text1,'string',T(13));
+
 set(handles.text1,'string','0');
 set(handles.text2,'string','0');
 set(handles.text3,'string','0');
@@ -147,13 +153,15 @@ function edit2_Callback(hObject, eventdata, handles)
 %setGlobal_theta1( str2double(get(hObject,'String')));
 temp2 = str2double(get(hObject,'String'));
 %limite superior
-limit2 = 180.0;
+limit2 = 90.0;
 if temp2 > limit2 %checar limite inferior
     %mensaje de error
     setGlobal_theta2(limit2); %Aqui debemos decidir si lo mantenemos en 180 o solo mandamos error
 else
     setGlobal_theta2(temp2);
 end
+%Para cambiar graficamente el slider
+set(handles.slider2,'Value',getGlobal_theta2/limit2);
 %r = getGlobal_theta2
 
 % --- Executes during object creation, after setting all properties.
@@ -177,19 +185,30 @@ function pushbutton10_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-device=serialport("COM5",9600); 
+device=serialport("COM4",9600); 
 pause(1.0) 
 %-----------------------ESCRIBE------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
 writeline(device,theta_array) 
 pause(2.0) 
-%-----------------------LECTURA------------------ 
+%-----------------LEE DATO RECIBIDO POR EL ARDUINO------
+%-------------debug 1----------------------
+%reads until it gets the new line character 
 configureTerminator(device,"LF") 
-disp("Reading Message from Arduino") 
+disp("Los grados que recibe el Arduino") 
 while device.NumBytesAvailable ~= 0 
     disp(readline(device)) 
 end 
-pause(1.0)
+pause(2.0) 
+%-------------------------------------------
+%-------------debug 2----------------------
+%reads until it gets the new line character 
+configureTerminator(device,"LF") 
+disp("Posiciones que recibe el Arduino:") 
+while device.NumBytesAvailable ~= 0 
+    disp(readline(device)) 
+end 
+pause(1.0) 
 %-------------------------------------------
 clear device
 
@@ -223,13 +242,15 @@ function edit3_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of edit2 as a double
 temp3 = str2double(get(hObject,'String'));
 %limite superior
-limit3 = 180.0;
+limit3 = 90.0;
 if temp3 > limit3 %checar limite inferior
     %mensaje de error
     setGlobal_theta3(limit3); %Aqui debemos decidir si lo mantenemos en 180 o solo mandamos error
 else
     setGlobal_theta3(temp3);
 end
+%Para cambiar graficamente el slider
+set(handles.slider3,'Value',getGlobal_theta3/limit3);
 %r = getGlobal_theta3
 
 
@@ -262,7 +283,8 @@ if temp1 > limit1 %checar limite inferior
 else
     setGlobal_theta1(temp1);
 end
-%r = getGlobal_theta1
+%Para cambiar graficamente el slider
+set(handles.slider1,'Value',getGlobal_theta1/limit1);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -286,11 +308,21 @@ function slider1_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 slider1_val=get(hObject,'Value');
-a=slider1_val*180;
-setGlobal_theta1(a);
-
-%start the serial communication 
-device=serialport("COM5",9600); 
+%Es relativo porque cada que se cambia el valor desde las cajitas de texto, se modifica el valor actual del slider
+temp1=slider1_val*180; 
+%limite superior
+limit1 = 180.0;
+%Approach uno pa limitar, aunque es suficiente con multiplicar la verdad
+if temp1 > limit1 %checar limite inferior
+    %mensaje de error
+    setGlobal_theta1(limit1); %Aqui debemos decidir si lo mantenemos en 180 o solo mandamos error
+else
+    setGlobal_theta1(temp1);
+end
+%Actualiza graficamente el cuadro de texto de theta1
+set(handles.edit1,'string',getGlobal_theta1);
+%--------------------Start the serial communication 
+device=serialport("COM4",9600); 
 pause(1.0) 
 %--------------------------MANDA DATO------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
@@ -302,16 +334,16 @@ pause(2.0)
 %-------------debug 1----------------------
 %reads until it gets the new line character 
 configureTerminator(device,"LF") 
-disp("Reading Message from Arduino") 
+disp("Los grados que recibe el Arduino") 
 while device.NumBytesAvailable ~= 0 
     disp(readline(device)) 
 end 
-pause(1.0) 
+pause(2.0) 
 %-------------------------------------------
 %-------------debug 2----------------------
 %reads until it gets the new line character 
 configureTerminator(device,"LF") 
-disp("Posiciones que recibe el Arduino") 
+disp("Posiciones que recibe el Arduino:") 
 while device.NumBytesAvailable ~= 0 
     disp(readline(device)) 
 end 
@@ -320,8 +352,12 @@ pause(1.0)
 %Terminando conexion 
 clear device
 
-%******AQUI***** aplicar el la funcion pa resolver DH
-set(handles.text1,'string','Resultado X');
+%Funcion pa resolver el DH de nuestro robot
+%[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T,MP,MI] = GENDGM([0 0 0],[0 5 4],[pi/2 0 0],[6 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+%Resultado coordenada X
+%en la posición 13 de la matriz T4x4 vista como un arreglo lineal
+set(handles.text1,'string',T(13));
 
 
 
@@ -350,29 +386,44 @@ b=slider2_val*90;
 %Limite superior- 90
 %Limite inferior- 0
 setGlobal_theta2(b);
-
+%Actualiza graficamente el cuadro de texto de theta2
+set(handles.edit2,'string',getGlobal_theta2);
 %start the serial communication 
-device=serialport("COM5",9600);
+device=serialport("COM4",9600);
 pause(1.0)
 %-----------------Escribe------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
 %Manda array_theta a Arduino
 writeline(device,theta_array) 
 pause(2.0)
-%------------------LECTURA-----------------
+%-----------------LEE DATO RECIBIDO POR EL ARDUINO------
+%-------------debug 1----------------------
+%reads until it gets the new line character 
 configureTerminator(device,"LF") 
-disp("Reading Message from Arduino") 
+disp("Los grados que recibe el Arduino") 
+while device.NumBytesAvailable ~= 0 
+    disp(readline(device)) 
+end 
+pause(2.0) 
+%-------------------------------------------
+%-------------debug 2----------------------
+%reads until it gets the new line character 
+configureTerminator(device,"LF") 
+disp("Posiciones que recibe el Arduino:") 
 while device.NumBytesAvailable ~= 0 
     disp(readline(device)) 
 end 
 pause(1.0) 
-%------------------------------------------
+%-------------------------------------------
 %Terminando comunicación
 clear device
 
-%******AQUI***** aplicar el la funcion pa resolver DH
-%------------Aquí se imprime el valor de Y
-set(handles.text2,'string','Resultado Y');
+%Funcion pa resolver el DH de nuestro robot
+%[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T,MP,MI] = GENDGM([0 0 0],[0 5 4],[pi/2 0 0],[6 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+%Resultado coordenada Y
+%en la posición 14 de la matriz T4x4 vista como un arreglo lineal
+set(handles.text2,'string',T(14));
 
 % --- Executes during object creation, after setting all properties.
 function slider2_CreateFcn(hObject, eventdata, handles)
@@ -395,13 +446,15 @@ function slider3_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 slider3_val=get(hObject,'Value');
-c=slider3_val*180;
-%Limite superior- 180
+c=slider3_val*90;
+%Limite superior- 90
 %Limite inferior- 0
 setGlobal_theta3(c);
+%Actualiza graficamente el cuadro de texto de theta1
+set(handles.edit3,'string',getGlobal_theta3);
 %---------------------------MANDAR EL DATO-----------------------
 %start the serial communication 
-device=serialport("COM5",9600); 
+device=serialport("COM4",9600); 
 pause(1.0) 
 %--------------------------MANDA DATO------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
@@ -421,8 +474,12 @@ pause(1.0)
 %Terminando conexion 
 clear device
 
-%******AQUI***** aplicar el la funcion pa resolver DH
-set(handles.text3,'string','Resultado Z');
+%Funcion pa resolver el DH de nuestro robot
+%[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T,MP,MI] = GENDGM([0 0 0],[0 5 4],[pi/2 0 0],[6 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+%Resultado coordenada Z
+%en la posición 15 de la matriz T4x4 vista como un arreglo lineal
+set(handles.text3,'string',T(15));
 
 % --- Executes during object creation, after setting all properties.
 function slider3_CreateFcn(hObject, eventdata, handles)
