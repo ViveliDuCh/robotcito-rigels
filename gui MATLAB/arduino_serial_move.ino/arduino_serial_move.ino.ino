@@ -14,10 +14,13 @@ char tempChars[numChars];        // temporary array for use when parsing
  
 
 // variables to hold the parsed data 
-int theta1=0; 
-int theta2=0; 
-int theta3=0; 
+int theta1 = 0; 
+int theta2 = 0; 
+int theta3 = 0; 
 
+int Theta1F = 0; 
+int Theta2F = 0; 
+int Theta3F = 0; 
  
 
 
@@ -29,26 +32,10 @@ boolean checker = true;
 void setup(){ 
 
   /** Configure Serial communication with the PC **/ 
-   Serial.begin(9600); 
-   Serial.println("This program expects 3 integers."); 
-   Serial.println("Enter data in this style <100, 200, 300> for <theta1, theta2, theta3>"); 
-   Serial.println(); 
-
-  /** Configure and make an initial test of the servos **/ 
-    pinMode(LED_BUILTIN, OUTPUT); //To make the arduino led blink 
-    //-------------------------Revisar el pin de control---------------------------
-    Dynamixel.begin(FREQ,2);  // Initialize the servo at FREQ bps and Pin Control 2 
-    //---------Test pa ver si funcionan los motores-----------------------------------
-    /*Dynamixel.ledStatus(ID,ON); //  Turns the LED on the back of the servomotor ON 
-    digitalWrite(LED_BUILTIN, HIGH);   // Make the arduino led blink 
-    //Test the servos at the beginning 
-    Dynamixel.move(ID,307);  // Move the Servo(ID), to 90°= 306.9 
-    delay(2000); 
-    Dynamixel.move(ID,0);  // Move the Servo(ID), to 0° = 0 
-    Dynamixel.ledStatus(ID,OFF); //  Turns the LED on the back of the servomotor OFF 
-    digitalWrite(LED_BUILTIN, LOW);   // Make the arduino led blink 
-    delay(2000); 
-    */
+  Serial.begin(9600); 
+  //-------------------------Revisar el pin de control---------------------------
+  Dynamixel.begin(FREQ,2);  // Initialize the servo at FREQ bps and Pin Control 2 
+  //---------Test pa ver si funcionan los motores-----------------------------------
 } 
 
  
@@ -60,25 +47,15 @@ void loop(){
             // this temporary copy is necessary to protect the original data 
             //   because strtok() used in parseData() replaces the commas with \0 
         parseData(); 
-        showParsedData(); 
         //Pa moverlos independientemente
         //--posible cambio moveServo(theta1); moveServo(theta2); moveServo(theta3);
-        moveServo(theta1, theta2, theta3); 
+        moveServo(theta1, theta2, theta3);
+        delay(1000); 
+        showParsedData(); //debug1 - Recepcion de datos/grados correctos
+        delay(1000);
+        showPositionData(); //debug2 - Conversion de posiciones
         newData = false; 
-        //For debugging
-       // delay(4000); // Para esperar a que el puerto se desocupe y poder usar el serial monitor justo despues
-        // showParsedData();
     }
-     //For debugging
-     //delay(4000); //Tienes que ser flash, mandar el dato y luego luego abrir el serial monitor lol 
-     // - en caso se no poder probarlo con motores
-     //showParsedData();
-     if (checker == true){
-        Serial.println(theta1); 
-        Serial.println(theta2); 
-        Serial.println(theta3);
-        checker = false;
-      }  
     
 } 
 
@@ -143,22 +120,22 @@ void showParsedData() {
     Serial.print("theta3: "); 
     Serial.println(theta3); 
 } 
+void showPositionData() { 
+    Serial.print("theta1: "); 
+    Serial.println(Theta1F); 
+    Serial.print("theta2: "); 
+    Serial.println(Theta2F); 
+    Serial.print("theta3: "); 
+    Serial.println(Theta3F); 
+} 
 
 void moveServo(int angle1, int angle2, int angle3) { 
   //Angle must be a value between 0 and 1023 (0°-300°)
   //Cambio de grados a posiciones:
-  int anglee1= angle1 * 1023/300;
-  int anglee2= angle2 * 1023/300;
-  int anglee3= angle3 * 1023/300;
-  Dynamixel.move(ID_theta1,angle1);  // Move the Servo(ID), to 0° = 0 
-  Dynamixel.move(ID_theta2,angle2);  // Move the Servo(ID), to 0° = 0 
-  Dynamixel.move(ID_theta3,angle3);  // Move the Servo(ID), to 0° = 0 
-
-  //Pa debuggear---- que sí se haga la conversión
-    Serial.print("theta1 en posicion: "); 
-    Serial.println(anglee1); 
-    Serial.print("theta2 en posicion: "); 
-    Serial.println(anglee2); 
-    Serial.print("theta3 en posicion: "); 
-    Serial.println(anglee3);
+  Theta1F = map(theta1,0,180,1023,400); //Rango de 0 a 180
+  Theta2F = map(theta2,0,90,400,695); //Rango de 0 a 90
+  Theta3F = map(theta3,0,180,590,280); //Rango de 0 a 90
+  Dynamixel.move(ID_theta1,Theta1F);  // Move the Servo(ID), to 0° = 0 
+  Dynamixel.move(ID_theta2,Theta2F);  // Move the Servo(ID), to 0° = 0 
+  Dynamixel.move(ID_theta3,Theta3F);  // Move the Servo(ID), to 0° = 0 
 } 

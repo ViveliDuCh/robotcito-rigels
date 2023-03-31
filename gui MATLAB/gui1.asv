@@ -147,7 +147,7 @@ function edit2_Callback(hObject, eventdata, handles)
 %setGlobal_theta1( str2double(get(hObject,'String')));
 temp2 = str2double(get(hObject,'String'));
 %limite superior
-limit2 = 90.0;
+limit2 = 180.0;
 if temp2 > limit2 %checar limite inferior
     %mensaje de error
     setGlobal_theta2(limit2); %Aqui debemos decidir si lo mantenemos en 180 o solo mandamos error
@@ -183,24 +183,13 @@ pause(1.0)
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
 writeline(device,theta_array) 
 pause(2.0) 
-%-----------------LEE DATO RECIBIDO POR EL ARDUINO------
-%-------------debug 1----------------------
-%reads until it gets the new line character 
+%-----------------------LECTURA------------------ 
 configureTerminator(device,"LF") 
-disp("Los grados que recibe el Arduino") 
+disp("Reading Message from Arduino") 
 while device.NumBytesAvailable ~= 0 
     disp(readline(device)) 
 end 
-pause(2.0) 
-%-------------------------------------------
-%-------------debug 2----------------------
-%reads until it gets the new line character 
-configureTerminator(device,"LF") 
-disp("Posiciones que recibe el Arduino:") 
-while device.NumBytesAvailable ~= 0 
-    disp(readline(device)) 
-end 
-pause(1.0) 
+pause(1.0)
 %-------------------------------------------
 clear device
 
@@ -313,16 +302,16 @@ pause(2.0)
 %-------------debug 1----------------------
 %reads until it gets the new line character 
 configureTerminator(device,"LF") 
-disp("Los grados que recibe el Arduino") 
+disp("Reading Message from Arduino") 
 while device.NumBytesAvailable ~= 0 
     disp(readline(device)) 
 end 
-pause(2.0) 
+pause(1.0) 
 %-------------------------------------------
 %-------------debug 2----------------------
 %reads until it gets the new line character 
 configureTerminator(device,"LF") 
-disp("Posiciones que recibe el Arduino:") 
+disp("Posiciones que recibe el Arduino") 
 while device.NumBytesAvailable ~= 0 
     disp(readline(device)) 
 end 
@@ -370,25 +359,14 @@ theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),"
 %Manda array_theta a Arduino
 writeline(device,theta_array) 
 pause(2.0)
-%-----------------LEE DATO RECIBIDO POR EL ARDUINO------
-%-------------debug 1----------------------
-%reads until it gets the new line character 
+%------------------LECTURA-----------------
 configureTerminator(device,"LF") 
-disp("Los grados que recibe el Arduino") 
-while device.NumBytesAvailable ~= 0 
-    disp(readline(device)) 
-end 
-pause(2.0) 
-%-------------------------------------------
-%-------------debug 2----------------------
-%reads until it gets the new line character 
-configureTerminator(device,"LF") 
-disp("Posiciones que recibe el Arduino:") 
+disp("Reading Message from Arduino") 
 while device.NumBytesAvailable ~= 0 
     disp(readline(device)) 
 end 
 pause(1.0) 
-%-------------------------------------------
+%------------------------------------------
 %Terminando comunicación
 clear device
 
