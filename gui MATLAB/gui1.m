@@ -73,7 +73,7 @@ clear device
 handles.output = hObject;
 
 %Funcion pa resolver el DH de nuestro robot
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
 %Posiciones iniciales con thetas = 0
 set(handles.text1,'string',T(13));
 set(handles.text2,'string',T(14));
@@ -219,7 +219,7 @@ pause(2.0)
 clear device
 
 %Funcion pa resolver el DH de nuestro robot
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
 %Posiciones iniciales con thetas = 0
 set(handles.text1,'string',T(13));
 set(handles.text2,'string',T(14));
@@ -251,7 +251,7 @@ function edit3_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of edit2 as a double
 temp3 = str2double(get(hObject,'String'));
 %limite superior
-limit3 = 90.0;
+limit3 = 115.0;
 if temp3 > limit3 %checar limite inferior
     %mensaje de error
     setGlobal_theta3(limit3); %Aqui debemos decidir si lo mantenemos en 180 o solo mandamos error
@@ -363,7 +363,7 @@ clear device
 
 %Funcion pa resolver el DH de nuestro robot
 %[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
 %Resultado coordenada X
 %en la posición 13 de la matriz T4x4 vista como un arreglo lineal
 set(handles.text1,'string',T(13));
@@ -430,7 +430,7 @@ clear device
 
 %Funcion pa resolver el DH de nuestro robot
 %[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
 %Resultado coordenada Y
 %en la posición 14 de la matriz T4x4 vista como un arreglo lineal
 set(handles.text2,'string',T(14));
@@ -457,7 +457,7 @@ function slider3_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 slider3_val=get(hObject,'Value');
-c=slider3_val*90;
+c=slider3_val*115;
 %Limite superior- 90
 %Limite inferior- 0
 setGlobal_theta3(c);
@@ -487,7 +487,7 @@ clear device
 
 %Funcion pa resolver el DH de nuestro robot
 %[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 0],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
 %Resultado coordenada Z
 %en la posición 15 de la matriz T4x4 vista como un arreglo lineal
 set(handles.text3,'string',T(15));
