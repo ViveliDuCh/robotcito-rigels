@@ -73,7 +73,7 @@ clear device
 handles.output = hObject;
 
 %Funcion pa resolver el DH de nuestro robot
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3+(pi/2)])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3-(pi/2)])
 %Posiciones iniciales con thetas = 0
 set(handles.text1,'string',T(13));
 set(handles.text2,'string',T(14));
@@ -97,40 +97,11 @@ function varargout = gui1_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-% --- Executes on button press in togglebutton1.
+% --- Executes on button press in togglebutton1. ----Limpiar eventualmente
 function togglebutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to togglebutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-%Tomando el valor del boton
-%Tomando el valor del boton
-valor_connect = get(handles.togglebutton1,'value');
-
-if valor_connect == 1
-    %Generando la conexion al arduino
-    %connect_ar = arduino('COM5'); %Checar el puerto al que se conecta el arduino
-    %Mandando la informacion a la variable global para poder tener una
-    %comunicacion serial desde todas las funciones de theta de la GUI
-    %device = serialport("COM5",9600); %---Si esto no jala, habra que generar la conexion en cada slider
-    set(handles.togglebutton1,'BackgroundColor','green');
-    set(handles.togglebutton1,'string','CONNECTED');
-    set(handles.togglebutton1,'BackgroundColor','green');
-    fprintf('Connected \n');  
-else
-    %delete(instrfind({'Port'},{'COM5'}));
-    %clear device %---Si esto no jala, habra que apagar la conexion  luego de generarla en cada slider
-    set(handles.togglebutton1,'BackgroundColor','red');
-    set(handles.togglebutton1,'string','DISCONNECTED');
-    fprintf('Disconnected \n');
-    pause(1);
-    %Restableciendo el color del boton -- maybe crashee
-    set(handles.togglebutton1,'BackgroundColor',[0.929 0.694 0.125]);
-    set(handles.togglebutton1,'string','CONNECT');
-    fprintf('Ready to connect :)\n');
-
-end
-
-
 
 % Hint: get(hObject,'Value') returns toggle state of togglebutton1
 
@@ -153,10 +124,6 @@ function edit2_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of edit2 as text
 
 %        str2double(get(hObject,'String')) returns contents of edit2 as a double
-%------------NOTA: Aqui no se manda el dato porque 
-% -------------lo mandas al presionar MOVE, entonces la instruccion
-%---------------de mandarlo va ahi
-%setGlobal_theta1( str2double(get(hObject,'String')));
 temp2 = str2double(get(hObject,'String'))
 %limite superior
 limit2 = 90.0;
@@ -172,10 +139,6 @@ set(handles.slider2,'Value',getGlobal_theta2/limit2);
 
 % --- Executes during object creation, after setting all properties.
 function edit2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -188,59 +151,21 @@ end
 % --- Executes on button press in pushbutton10. ------ MOVE button
 function pushbutton10_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton10 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
 device=serialport("COM4",9600); 
 pause(1.0) 
 %-----------------------ESCRIBE------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
 writeline(device,theta_array) 
 pause(2.0) 
-%-----------------LEE DATO RECIBIDO POR EL ARDUINO------
-%-------------debug 1----------------------
-%reads until it gets the new line character 
-% configureTerminator(device,"LF") 
-% disp("Los grados que recibe el Arduino") 
-% while device.NumBytesAvailable ~= 0 
-%     disp(readline(device)) 
-% end 
-% pause(2.0) 
-% %-------------------------------------------
-% %-------------debug 2----------------------
-% %reads until it gets the new line character 
-% configureTerminator(device,"LF") 
-% disp("Posiciones que recibe el Arduino:") 
-% while device.NumBytesAvailable ~= 0 
-%     disp(readline(device)) 
-% end 
-% pause(1.0) 
-%-------------------------------------------
 clear device
 
 %Funcion pa resolver el DH de nuestro robot
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3+(pi/2)])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3-(pi/2)])
 %Posiciones iniciales con thetas = 0
 set(handles.text1,'string',T(13));
 set(handles.text2,'string',T(14));
 set(handles.text3,'string',T(15));
 pause(1.0)
-
-
-% --- Executes on button press in pushbutton8.
-function pushbutton8_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton8 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in pushbutton9.
-function pushbutton9_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton9 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
 
 function edit3_Callback(hObject, eventdata, handles)
 % hObject    handle to edit2 (see GCBO)
@@ -319,8 +244,7 @@ function slider1_Callback(hObject, eventdata, handles)
 slider1_val=get(hObject,'Value');
 %Es relativo porque cada que se cambia el valor desde las cajitas de texto, se modifica el valor actual del slider
 temp1=slider1_val*180
-%limite superior
-limit1 = 180.0;
+limit1 = 180.0; %limite superior
 %Approach uno pa limitar, aunque es suficiente con multiplicar la verdad
 if temp1 > limit1 %checar limite inferior
     %mensaje de error
@@ -339,31 +263,11 @@ pause(1.0);
 %-------------Manda thetas_array
 writeline(device,theta_array) 
 pause(2.0) 
-%-----------------LEE DATO RECIBIDO POR EL ARDUINO------
-%-------------debug 1----------------------
-%reads until it gets the new line character 
-% configureTerminator(device,"LF") 
-% disp("Los grados que recibe el Arduino") 
-% while device.NumBytesAvailable ~= 0 
-%     disp(readline(device)) 
-% end 
-% pause(2.0) 
-% %-------------------------------------------
-% %-------------debug 2----------------------
-% %reads until it gets the new line character 
-% configureTerminator(device,"LF") 
-% disp("Posiciones que recibe el Arduino:") 
-% while device.NumBytesAvailable ~= 0 
-%     disp(readline(device)) 
-% end 
-% pause(1.0) 
-%-------------------------------------------
 %Terminando conexion 
 clear device
 
 %Funcion pa resolver el DH de nuestro robot
-%[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3+(pi/2)])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3-(pi/2)])
 %Resultado coordenada X
 %en la posición 13 de la matriz T4x4 vista como un arreglo lineal
 set(handles.text1,'string',T(13));
@@ -406,31 +310,11 @@ theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),"
 %Manda array_theta a Arduino
 writeline(device,theta_array) 
 pause(2.0)
-%-----------------LEE DATO RECIBIDO POR EL ARDUINO------
-%-------------debug 1----------------------
-%reads until it gets the new line character 
-% configureTerminator(device,"LF") 
-% disp("Los grados que recibe el Arduino") 
-% while device.NumBytesAvailable ~= 0 
-%     disp(readline(device)) 
-% end 
-% pause(2.0) 
-% %-------------------------------------------
-% %-------------debug 2----------------------
-% %reads until it gets the new line character 
-% configureTerminator(device,"LF") 
-% disp("Posiciones que recibe el Arduino:") 
-% while device.NumBytesAvailable ~= 0 
-%     disp(readline(device)) 
-% end 
-% pause(1.0) 
-%-------------------------------------------
 %Terminando comunicación
 clear device
 
 %Funcion pa resolver el DH de nuestro robot
-%[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3+(pi/2)])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3-(pi/2)])
 %Resultado coordenada Y
 %en la posición 14 de la matriz T4x4 vista como un arreglo lineal
 set(handles.text2,'string',T(14));
@@ -457,9 +341,7 @@ function slider3_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 slider3_val=get(hObject,'Value')
-c=slider3_val*115;
-%Limite superior- 90
-%Limite inferior- 0
+c=slider3_val*115; %Limite superior- 115
 setGlobal_theta3(c);
 %Actualiza graficamente el cuadro de texto de theta1
 set(handles.edit3,'string',getGlobal_theta3);
@@ -473,21 +355,11 @@ pause(1.0);
 %-------------Manda thetas_array
 writeline(device,theta_array) 
 pause(1.0) 
-%-----------------LEE DATO RECIBIDO POR EL ARDUINO------
-%reads until it gets the new line character 
-% configureTerminator(device,"LF") 
-% disp("Reading Message from Arduino") 
-% while device.NumBytesAvailable ~= 0 
-%     disp(readline(device)) 
-% end 
-% pause(1.0) 
-%-------------------------------------------
 %Terminando conexion 
 clear device
 
 %Funcion pa resolver el DH de nuestro robot
-%[T,MP,MI] = GENDGM([0 0 0],[0 L2 L3],[pi/2 0 0],[L1 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3])
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 0 pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3+(pi/2)])
+[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1 getGlobal_theta2 getGlobal_theta3-(pi/2)])
 %Resultado coordenada Z
 %en la posición 15 de la matriz T4x4 vista como un arreglo lineal
 set(handles.text3,'string',T(15));
