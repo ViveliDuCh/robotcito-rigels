@@ -22,7 +22,7 @@ function varargout = gui1(varargin)
 
 % Edit the above text to modify the response to help gui1
 
-% Last Modified by GUIDE v2.5 05-May-2023 18:11:03
+% Last Modified by GUIDE v2.5 12-May-2023 17:22:27
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -87,6 +87,10 @@ set(handles.text2,'string',round(T(14)));
 set(handles.text3,'string',round(T(15)));
 pause(1.0)
 
+handles.resultado1=0;
+handles.resultado2=0;
+handles.resultado3=0;
+
 % device=serialport("COM5",9600); 
 % pause(1.0) 
 % theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
@@ -119,13 +123,62 @@ varargout{1} = handles.output;
 % Update handles structure
 guidata(hObject, handles);
 
-% --- Executes on button press in togglebutton1. ----Limpiar eventualmente
-function togglebutton1_Callback(hObject, eventdata, handles)
-% hObject    handle to togglebutton1 (see GCBO)
+% --- Executes on button press in togglebuttonHOME. ----Limpiar eventualmente
+function togglebuttonHOME_Callback(hObject, eventdata, handles)
+% hObject    handle to togglebuttonHOME (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of togglebutton1
+%Variables thetas GLOBALES en posición 0
+[theta1, theta2, theta3] = setGlobal_thetas(0,0,0);
+%Compensacion en punto
+setGlobal_theta3(getGlobal_theta3-90);
+
+% Hint: get(hObject,'Value') returns toggle state of togglebuttonHOME
+%Funcion pa resolver el DH de nuestro robot
+[T, MatrizParcial,MatrizInterm] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180]) 
+MatrizInterm = round(MatrizInterm) %se redondea porque else no se ve identico al real
+T_1=MatrizInterm(:,:,1); %Junta 1
+T_2=MatrizInterm(:,:,2); %Junta 2
+T_3=MatrizInterm(:,:,3); %Junta 3
+%Separacion de coordenadas a graficar
+X = [0 T_1(1,4) T_2(1,4) T_3(1,4)]
+Y = [0 T_1(2,4) T_2(2,4) T_3(2,4)]
+Z = [0 T_1(3,4) T_2(3,4) T_3(3,4)]
+%figure %Pa debuggear
+plot3(X,Y,Z,'-o','Color',[0.5 0 0.8]);
+xlabel('X')
+ylabel('Y')
+zlabel('N')
+grid on
+%axis([-300 300 -300 300 0 300])
+%view([-38 21])
+%view([-160 21])
+
+device=serialport("COM5",9600); 
+pause(1.0) 
+%-----------------------ESCRIBE------------------
+% le sumamos 90 al theta 3 porque en la formula de cada edit se lo restamos
+% para que salga bien el DH
+
+theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3+90),">")
+writeline(device,theta_array) 
+pause(2.0) 
+clear device
+
+%Posiciones iniciales con thetas = 0
+set(handles.text1,'string',round(T(13)));
+set(handles.text2,'string',round(T(14)));
+set(handles.text3,'string',round(T(15)));
+pause(1.0)
+
+%Para cambiar graficamente el slider
+set(handles.slider1,'Value',0);
+set(handles.slider2,'Value',0);
+set(handles.slider3,'Value',0);
+%r = getGlobal_theta2
+% Update handles structure
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -175,7 +228,7 @@ end
 % --- Executes on button press in pushbutton10. ------ MOVE button
 function pushbutton10_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton10 (see GCBO)
-device=serialport("COM3",9600); 
+device=serialport("COM5",9600); 
 pause(1.0) 
 %-----------------------ESCRIBE------------------
 % le sumamos 90 al theta 3 porque en la formula de cada edit se lo restamos
@@ -310,7 +363,7 @@ end
 %Actualiza graficamente el cuadro de texto de theta1
 set(handles.edit1,'string',getGlobal_theta1);
 %--------------------Start the serial communication 
-device=serialport("COM3",9600); 
+device=serialport("COM5",9600); 
 pause(1.0) 
 %--------------------------MANDA DATO------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
@@ -381,7 +434,7 @@ setGlobal_theta2(b);
 %Actualiza graficamente el cuadro de texto de theta2
 set(handles.edit2,'string',getGlobal_theta2);
 %start the serial communication 
-device=serialport("COM3",9600);
+device=serialport("COM5",9600);
 pause(1.0)
 %-----------------Escribe------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
@@ -446,7 +499,7 @@ set(handles.edit3,'string',getGlobal_theta3);
 setGlobal_theta3(c);
 %---------------------------MANDAR EL DATO-----------------------
 %start the serial communication 
-device=serialport("COM3",9600); 
+device=serialport("COM5",9600); 
 pause(1.0) 
 %--------------------------MANDA DATO------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
@@ -476,3 +529,99 @@ function slider3_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
+
+
+
+function posicionX_Callback(hObject, eventdata, handles)
+% hObject    handle to posicionX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of posicionX as text
+%        str2double(get(hObject,'String')) returns contents of posicionX as a double
+%Aqui se obtiene el valor de X
+handles.posicionX = str2double(get(hObject,'String'));
+
+% --- Executes during object creation, after setting all properties.
+function posicionX_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to posicionX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function posicionY_Callback(hObject, eventdata, handles)
+% hObject    handle to posicionY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of posicionY as text
+%        str2double(get(hObject,'String')) returns contents of posicionY as a double
+handles.posicionY = str2double(get(hObject,'String'))
+
+% --- Executes during object creation, after setting all properties.
+function posicionY_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to posicionY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function posicionZ_Callback(hObject, eventdata, handles)
+% hObject    handle to posicionZ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of posicionZ as text
+%        str2double(get(hObject,'String')) returns contents of posicionZ as a double
+posicionZ = str2double(get(hObject,'String'))
+
+% --- Executes during object creation, after setting all properties.
+function posicionZ_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to posicionZ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in posiciones.
+function posiciones_Callback(hObject, eventdata, handles)
+% hObject    handle to posiciones (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%Las variables de las coordenadas X, Y, Z se llaman
+%handles.posicionX 
+%handles.posicionY 
+%handles.posicionZ
+%son globales y se usan como cualquier variable
+
+%-----------------AQUI DEBEN PONER EL CODIGO DE INVERSA-----------
+
+%AQUI SE PUEDEN IMPRIMIR 3 RESULTADOS EN LA GUI - 
+%Lo puse como theta 1,2,3 pero puede ser lo que
+set(handles.salidaTheta1,'string',handles.resultado1);
+set(handles.salidaTheta2,'string',handles.resultado2);
+set(handles.salidaTheta3,'string',handles.resultado3);
+pause(1.0)
+% Update handles structure
+guidata(hObject, handles);
+
+
