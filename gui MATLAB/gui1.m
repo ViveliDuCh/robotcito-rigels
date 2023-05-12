@@ -22,7 +22,7 @@ function varargout = gui1(varargin)
 
 % Edit the above text to modify the response to help gui1
 
-% Last Modified by GUIDE v2.5 29-Mar-2023 00:38:13
+% Last Modified by GUIDE v2.5 05-May-2023 18:11:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -62,19 +62,34 @@ function gui1_OpeningFcn(hObject, eventdata, handles, varargin)
 setGlobal_theta3(getGlobal_theta3-90);
 
 %Funcion pa resolver el DH de nuestro robot
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180])
+[T, MatrizParcial,MatrizInterm] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180]) 
+MatrizInterm = round(MatrizInterm) %se redondea porque else no se ve identico al real
+T_1=MatrizInterm(:,:,1); %Junta 1
+T_2=MatrizInterm(:,:,2); %Junta 2
+T_3=MatrizInterm(:,:,3); %Junta 3
+%Separacion de coordenadas a graficar
+X = [0 T_1(1,4) T_2(1,4) T_3(1,4)]
+Y = [0 T_1(2,4) T_2(2,4) T_3(2,4)]
+Z = [0 T_1(3,4) T_2(3,4) T_3(3,4)]
+%figure %Pa debuggear
+plot3(X,Y,Z,'-o','Color',[0.5 0 0.8]);
+xlabel('x')
+ylabel('y')
+zlabel('z')
+grid on
+
 %Posiciones iniciales con thetas = 0
-set(handles.text1,'string',T(13));
-set(handles.text2,'string',T(14));
-set(handles.text3,'string',T(15));
+set(handles.text1,'string',round(T(13)));
+set(handles.text2,'string',round(T(14)));
+set(handles.text3,'string',round(T(15)));
 pause(1.0)
 
-device=serialport("COM3",9600); 
-pause(1.0) 
-theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
-writeline(device,theta_array) 
-pause(1.0) 
-clear device
+% device=serialport("COM5",9600); 
+% pause(1.0) 
+% theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
+% writeline(device,theta_array) 
+% pause(1.0) 
+% clear device
 
 %Para asignar valores o leer su valor se necesita: setGlobal_thetax y getGlobal_thetax 
 %La x siendo el numero de theta que se busca modificar 
@@ -98,6 +113,8 @@ function varargout = gui1_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
+% Update handles structure
+guidata(hObject, handles);
 
 % --- Executes on button press in togglebutton1. ----Limpiar eventualmente
 function togglebutton1_Callback(hObject, eventdata, handles)
@@ -138,6 +155,8 @@ end
 %Para cambiar graficamente el slider
 set(handles.slider2,'Value',getGlobal_theta2/limit2);
 %r = getGlobal_theta2
+% Update handles structure
+guidata(hObject, handles);
 
 % --- Executes during object creation, after setting all properties.
 function edit2_CreateFcn(hObject, eventdata, handles)
@@ -153,7 +172,7 @@ end
 % --- Executes on button press in pushbutton10. ------ MOVE button
 function pushbutton10_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton10 (see GCBO)
-device=serialport("COM3",9600); 
+device=serialport("COM5",9600); 
 pause(1.0) 
 %-----------------------ESCRIBE------------------
 % le sumamos 90 al theta 3 porque en la formula de cada edit se lo restamos
@@ -164,13 +183,28 @@ writeline(device,theta_array)
 pause(2.0) 
 clear device
 
-%Funcion pa resolver el DH de nuestro robot
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180])
+[T, MatrizParcial,MatrizInterm] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180]) 
+MatrizInterm = round(MatrizInterm) %se redondea porque else no se ve identico al real
+T_1=MatrizInterm(:,:,1); %Junta 1
+T_2=MatrizInterm(:,:,2); %Junta 2
+T_3=MatrizInterm(:,:,3); %Junta 3
+%Separacion de coordenadas a graficar
+X = [0 T_1(1,4) T_2(1,4) T_3(1,4)]
+Y = [0 T_1(2,4) T_2(2,4) T_3(2,4)]
+Z = [0 T_1(3,4) T_2(3,4) T_3(3,4)]
+%figure %Pa debuggear
+plot3(X,Y,Z,'-o','Color',[0.5 0 0.8]);
+xlabel('x')
+ylabel('y')
+zlabel('z')
+grid on
 %Posiciones iniciales con thetas = 0
-set(handles.text1,'string',T(13));
-set(handles.text2,'string',T(14));
-set(handles.text3,'string',T(15));
+set(handles.text1,'string',round(T(13)));
+set(handles.text2,'string',round(T(14)));
+set(handles.text3,'string',round(T(15)));
 pause(1.0)
+% Update handles structure
+guidata(hObject, handles);
 
 function edit3_Callback(hObject, eventdata, handles)
 % hObject    handle to edit2 (see GCBO)
@@ -196,6 +230,8 @@ end
 %Para cambiar graficamente el slider
 %set(handles.slider3,'Value',getGlobal_theta3/limit3);
 %r = getGlobal_theta3
+% Update handles structure
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -229,6 +265,8 @@ else
 end
 %Para cambiar graficamente el slider
 set(handles.slider1,'Value',getGlobal_theta1/limit1);
+% Update handles structure
+guidata(hObject, handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -265,7 +303,7 @@ end
 %Actualiza graficamente el cuadro de texto de theta1
 set(handles.edit1,'string',getGlobal_theta1);
 %--------------------Start the serial communication 
-device=serialport("COM3",9600); 
+device=serialport("COM5",9600); 
 pause(1.0) 
 %--------------------------MANDA DATO------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
@@ -277,11 +315,29 @@ pause(2.0)
 clear device
 
 %Funcion pa resolver el DH de nuestro robot
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180])
+%Comento lo siguiente por si me equivoco copypasteando algo - BACKUP del DH
+%[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180])
+[T, MatrizParcial,MatrizInterm] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180]) 
+MatrizInterm = round(MatrizInterm) %se redondea porque else no se ve identico al real
+T_1=MatrizInterm(:,:,1); %Junta 1
+T_2=MatrizInterm(:,:,2); %Junta 2
+T_3=MatrizInterm(:,:,3); %Junta 3
+%Separacion de coordenadas a graficar
+X = [0 T_1(1,4) T_2(1,4) T_3(1,4)]
+Y = [0 T_1(2,4) T_2(2,4) T_3(2,4)]
+Z = [0 T_1(3,4) T_2(3,4) T_3(3,4)]
+%figure %Pa debuggear
+plot3(X,Y,Z,'-o','Color',[0.5 0 0.8]);
+xlabel('x')
+ylabel('y')
+zlabel('z')
+grid on
 %Resultado coordenada X
 %en la posición 13 de la matriz T4x4 vista como un arreglo lineal
-set(handles.text1,'string',T(13));
+set(handles.text1,'string',round(T(13)));
 pause(1.0)
+% Update handles structure
+guidata(hObject, handles);
 
 
 
@@ -314,7 +370,7 @@ setGlobal_theta2(b);
 %Actualiza graficamente el cuadro de texto de theta2
 set(handles.edit2,'string',getGlobal_theta2);
 %start the serial communication 
-device=serialport("COM3",9600);
+device=serialport("COM5",9600);
 pause(1.0)
 %-----------------Escribe------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
@@ -324,12 +380,28 @@ pause(2.0)
 %Terminando comunicación
 clear device
 
-%Funcion pa resolver el DH de nuestro robot
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180])
+[T, MatrizParcial,MatrizInterm] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180]) 
+MatrizInterm = round(MatrizInterm) %se redondea porque else no se ve identico al real
+T_1=MatrizInterm(:,:,1); %Junta 1
+T_2=MatrizInterm(:,:,2); %Junta 2
+T_3=MatrizInterm(:,:,3); %Junta 3
+%Separacion de coordenadas a graficar
+X = [0 T_1(1,4) T_2(1,4) T_3(1,4)]
+Y = [0 T_1(2,4) T_2(2,4) T_3(2,4)]
+Z = [0 T_1(3,4) T_2(3,4) T_3(3,4)]
+%figure %Pa debuggear
+plot3(X,Y,Z,'-o','Color',[0.5 0 0.8]);
+xlabel('x')
+ylabel('y')
+zlabel('z')
+grid on
 %Resultado coordenada Y
 %en la posición 14 de la matriz T4x4 vista como un arreglo lineal
-set(handles.text2,'string',T(14));
+set(handles.text2,'string',round(T(14)));
 pause(1.0)
+% Update handles structure
+guidata(hObject, handles);
+
 
 % --- Executes during object creation, after setting all properties.
 function slider2_CreateFcn(hObject, eventdata, handles)
@@ -359,7 +431,7 @@ set(handles.edit3,'string',getGlobal_theta3);
 setGlobal_theta3(c);
 %---------------------------MANDAR EL DATO-----------------------
 %start the serial communication 
-device=serialport("COM3",9600); 
+device=serialport("COM5",9600); 
 pause(1.0) 
 %--------------------------MANDA DATO------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
@@ -374,8 +446,10 @@ clear device
 [T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180])
 %Resultado coordenada Z
 %en la posición 15 de la matriz T4x4 vista como un arreglo lineal
-set(handles.text3,'string',T(15));
+set(handles.text3,'string',round(T(15)));
 pause(1.0)
+% Update handles structure
+guidata(hObject, handles); %Para actualizar la estructura de datos de los handles
 
 % --- Executes during object creation, after setting all properties.
 function slider3_CreateFcn(hObject, eventdata, handles)
