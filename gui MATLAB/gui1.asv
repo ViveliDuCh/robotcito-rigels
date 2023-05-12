@@ -71,17 +71,20 @@ T_3=MatrizInterm(:,:,3); %Junta 3
 X = [0 T_1(1,4) T_2(1,4) T_3(1,4)]
 Y = [0 T_1(2,4) T_2(2,4) T_3(2,4)]
 Z = [0 T_1(3,4) T_2(3,4) T_3(3,4)]
-%figure %Pa debuggear
+figure %Pa debuggear
 plot3(X,Y,Z,'-o','Color',[0.5 0 0.8]);
 xlabel('x')
 ylabel('y')
-zlabel('z')
+zlabel('N')
 grid on
+axis([-300 300 -300 300 0 300])
+view([-38 21])
+%view([-160 21])
 
 %Posiciones iniciales con thetas = 0
-set(handles.text1,'string',T(13));
-set(handles.text2,'string',T(14));
-set(handles.text3,'string',T(15));
+set(handles.text1,'string',round(T(13)));
+set(handles.text2,'string',round(T(14)));
+set(handles.text3,'string',round(T(15)));
 pause(1.0)
 
 % device=serialport("COM5",9600); 
@@ -172,7 +175,7 @@ end
 % --- Executes on button press in pushbutton10. ------ MOVE button
 function pushbutton10_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton10 (see GCBO)
-device=serialport("COM5",9600); 
+device=serialport("COM3",9600); 
 pause(1.0) 
 %-----------------------ESCRIBE------------------
 % le sumamos 90 al theta 3 porque en la formula de cada edit se lo restamos
@@ -192,16 +195,20 @@ T_3=MatrizInterm(:,:,3); %Junta 3
 X = [0 T_1(1,4) T_2(1,4) T_3(1,4)]
 Y = [0 T_1(2,4) T_2(2,4) T_3(2,4)]
 Z = [0 T_1(3,4) T_2(3,4) T_3(3,4)]
-%figure %Pa debuggear
+figure %Pa debuggear
 plot3(X,Y,Z,'-o','Color',[0.5 0 0.8]);
-xlabel('x')
-ylabel('y')
-zlabel('z')
+xlabel('y')
+ylabel('x')
+zlabel('N')
 grid on
+axis([-300 300 -300 300 0 300])
+view([-38 21])
+%view([-160 21])
+
 %Posiciones iniciales con thetas = 0
-set(handles.text1,'string',T(13));
-set(handles.text2,'string',T(14));
-set(handles.text3,'string',T(15));
+set(handles.text1,'string',round(T(13)));
+set(handles.text2,'string',round(T(14)));
+set(handles.text3,'string',round(T(15)));
 pause(1.0)
 % Update handles structure
 guidata(hObject, handles);
@@ -303,7 +310,7 @@ end
 %Actualiza graficamente el cuadro de texto de theta1
 set(handles.edit1,'string',getGlobal_theta1);
 %--------------------Start the serial communication 
-device=serialport("COM5",9600); 
+device=serialport("COM3",9600); 
 pause(1.0) 
 %--------------------------MANDA DATO------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
@@ -315,12 +322,30 @@ pause(2.0)
 clear device
 
 %Funcion pa resolver el DH de nuestro robot
-%Comento lo siguiente por si me equivococopypasteando algo - BACKUP del
-%DH
+%Comento lo siguiente por si me equivoco copypasteando algo - BACKUP del DH
 %[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180])
+[T, MatrizParcial,MatrizInterm] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180]) 
+MatrizInterm = round(MatrizInterm) %se redondea porque else no se ve identico al real
+T_1=MatrizInterm(:,:,1); %Junta 1
+T_2=MatrizInterm(:,:,2); %Junta 2
+T_3=MatrizInterm(:,:,3); %Junta 3
+%Separacion de coordenadas a graficar
+X = [0 T_1(1,4) T_2(1,4) T_3(1,4)]
+Y = [0 T_1(2,4) T_2(2,4) T_3(2,4)]
+Z = [0 T_1(3,4) T_2(3,4) T_3(3,4)]
+figure %Pa debuggear
+plot3(X,Y,Z,'-o','Color',[0.5 0 0.8]);
+xlabel('x')
+ylabel('y')
+zlabel('z')
+grid on
+axis([-300 300 -300 300 0 300])
+view([-38 21])
+%view([-160 21])
+
 %Resultado coordenada X
 %en la posición 13 de la matriz T4x4 vista como un arreglo lineal
-set(handles.text1,'string',T(13));
+set(handles.text1,'string',round(T(13)));
 pause(1.0)
 % Update handles structure
 guidata(hObject, handles);
@@ -356,7 +381,7 @@ setGlobal_theta2(b);
 %Actualiza graficamente el cuadro de texto de theta2
 set(handles.edit2,'string',getGlobal_theta2);
 %start the serial communication 
-device=serialport("COM5",9600);
+device=serialport("COM3",9600);
 pause(1.0)
 %-----------------Escribe------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
@@ -366,11 +391,28 @@ pause(2.0)
 %Terminando comunicación
 clear device
 
-%Funcion pa resolver el DH de nuestro robot
-[T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180])
+[T, MatrizParcial,MatrizInterm] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180]) 
+MatrizInterm = round(MatrizInterm) %se redondea porque else no se ve identico al real
+T_1=MatrizInterm(:,:,1); %Junta 1
+T_2=MatrizInterm(:,:,2); %Junta 2
+T_3=MatrizInterm(:,:,3); %Junta 3
+%Separacion de coordenadas a graficar
+X = [0 T_1(1,4) T_2(1,4) T_3(1,4)]
+Y = [0 T_1(2,4) T_2(2,4) T_3(2,4)]
+Z = [0 T_1(3,4) T_2(3,4) T_3(3,4)]
+figure %Pa debuggear
+plot3(X,Y,Z,'-o','Color',[0.5 0 0.8]);
+xlabel('x')
+ylabel('y')
+zlabel('z')
+grid on
+%axis([-300 300 -300 300 0 300])
+view([-38 21])
+%view([-160 21])
+
 %Resultado coordenada Y
 %en la posición 14 de la matriz T4x4 vista como un arreglo lineal
-set(handles.text2,'string',T(14));
+set(handles.text2,'string',round(T(14)));
 pause(1.0)
 % Update handles structure
 guidata(hObject, handles);
@@ -404,7 +446,7 @@ set(handles.edit3,'string',getGlobal_theta3);
 setGlobal_theta3(c);
 %---------------------------MANDAR EL DATO-----------------------
 %start the serial communication 
-device=serialport("COM5",9600); 
+device=serialport("COM3",9600); 
 pause(1.0) 
 %--------------------------MANDA DATO------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
@@ -419,7 +461,7 @@ clear device
 [T] = GENDGM([0 0 0],[0 88.1 153.59],[pi/2 -pi -pi/2],[25.5 0 0],[0 0 0],[getGlobal_theta1*pi/180 getGlobal_theta2*pi/180 getGlobal_theta3*pi/180])
 %Resultado coordenada Z
 %en la posición 15 de la matriz T4x4 vista como un arreglo lineal
-set(handles.text3,'string',T(15));
+set(handles.text3,'string',round(T(15)));
 pause(1.0)
 % Update handles structure
 guidata(hObject, handles); %Para actualizar la estructura de datos de los handles

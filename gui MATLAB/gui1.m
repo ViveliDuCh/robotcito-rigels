@@ -73,10 +73,13 @@ Y = [0 T_1(2,4) T_2(2,4) T_3(2,4)]
 Z = [0 T_1(3,4) T_2(3,4) T_3(3,4)]
 %figure %Pa debuggear
 plot3(X,Y,Z,'-o','Color',[0.5 0 0.8]);
-xlabel('x')
-ylabel('y')
-zlabel('z')
+xlabel('X')
+ylabel('Y')
+zlabel('N')
 grid on
+%axis([-300 300 -300 300 0 300])
+%view([-38 21])
+%view([-160 21])
 
 %Posiciones iniciales con thetas = 0
 set(handles.text1,'string',round(T(13)));
@@ -172,7 +175,7 @@ end
 % --- Executes on button press in pushbutton10. ------ MOVE button
 function pushbutton10_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton10 (see GCBO)
-device=serialport("COM5",9600); 
+device=serialport("COM3",9600); 
 pause(1.0) 
 %-----------------------ESCRIBE------------------
 % le sumamos 90 al theta 3 porque en la formula de cada edit se lo restamos
@@ -194,10 +197,14 @@ Y = [0 T_1(2,4) T_2(2,4) T_3(2,4)]
 Z = [0 T_1(3,4) T_2(3,4) T_3(3,4)]
 %figure %Pa debuggear
 plot3(X,Y,Z,'-o','Color',[0.5 0 0.8]);
-xlabel('x')
-ylabel('y')
-zlabel('z')
+xlabel('X')
+ylabel('Y')
+zlabel('N')
 grid on
+%axis([-300 300 -300 300 0 300])
+%view([-38 21])
+%view([-160 21])
+
 %Posiciones iniciales con thetas = 0
 set(handles.text1,'string',round(T(13)));
 set(handles.text2,'string',round(T(14)));
@@ -303,7 +310,7 @@ end
 %Actualiza graficamente el cuadro de texto de theta1
 set(handles.edit1,'string',getGlobal_theta1);
 %--------------------Start the serial communication 
-device=serialport("COM5",9600); 
+device=serialport("COM3",9600); 
 pause(1.0) 
 %--------------------------MANDA DATO------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
@@ -328,10 +335,14 @@ Y = [0 T_1(2,4) T_2(2,4) T_3(2,4)]
 Z = [0 T_1(3,4) T_2(3,4) T_3(3,4)]
 %figure %Pa debuggear
 plot3(X,Y,Z,'-o','Color',[0.5 0 0.8]);
-xlabel('x')
-ylabel('y')
-zlabel('z')
+xlabel('X')
+ylabel('Y')
+zlabel('N')
 grid on
+%axis([-300 300 -300 300 0 300])
+%view([-38 21])
+%view([-160 21])
+
 %Resultado coordenada X
 %en la posición 13 de la matriz T4x4 vista como un arreglo lineal
 set(handles.text1,'string',round(T(13)));
@@ -370,7 +381,7 @@ setGlobal_theta2(b);
 %Actualiza graficamente el cuadro de texto de theta2
 set(handles.edit2,'string',getGlobal_theta2);
 %start the serial communication 
-device=serialport("COM5",9600);
+device=serialport("COM3",9600);
 pause(1.0)
 %-----------------Escribe------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">");
@@ -391,10 +402,14 @@ Y = [0 T_1(2,4) T_2(2,4) T_3(2,4)]
 Z = [0 T_1(3,4) T_2(3,4) T_3(3,4)]
 %figure %Pa debuggear
 plot3(X,Y,Z,'-o','Color',[0.5 0 0.8]);
-xlabel('x')
-ylabel('y')
-zlabel('z')
+xlabel('X')
+ylabel('Y')
+zlabel('N')
 grid on
+%axis([-300 300 -300 300 0 300])
+%view([-38 21])
+%view([-160 21])
+
 %Resultado coordenada Y
 %en la posición 14 de la matriz T4x4 vista como un arreglo lineal
 set(handles.text2,'string',round(T(14)));
@@ -431,7 +446,7 @@ set(handles.edit3,'string',getGlobal_theta3);
 setGlobal_theta3(c);
 %---------------------------MANDAR EL DATO-----------------------
 %start the serial communication 
-device=serialport("COM5",9600); 
+device=serialport("COM3",9600); 
 pause(1.0) 
 %--------------------------MANDA DATO------------------
 theta_array=strcat("<",int2str(getGlobal_theta1),",",int2str(getGlobal_theta2),",",int2str(getGlobal_theta3),">")
