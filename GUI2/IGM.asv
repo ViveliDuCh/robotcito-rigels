@@ -75,8 +75,8 @@ end
 S
 j_salida=2;
 q1_limit = pi;
-q2_limit = pi;
-q3_limit = pi;
+q2_limit = pi/2;
+q3_limit = pi/2;
 S_label = ["Seleccione"]; %default
 
 Salida(:,:,1) = [0 0 0]; %Si no matchea con ninguna, vuelve a home
@@ -118,7 +118,7 @@ sigma = [0 0 0]; %0R 1P
 a =     [0 L2 L3];
 alpha = [pi/2 -pi -pi/2];
 d =     [L1 0 0];
-q =     S(:,:,2);
+q =     S(:,:,2)
 theta = [q(1) q(2) q(3)];
 T = GENDGM(sigma,a,alpha,d,theta,q)
 
