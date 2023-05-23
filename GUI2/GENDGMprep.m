@@ -56,8 +56,8 @@ function [T,MatrizParcial,MatrizInterm] = GENDGM(sigma,a,alpha,d,theta,q)
                 j;
                 T=rotZaxis(theta(j,1))*transZaxis(d(j,1))*rotXaxis(alpha(j,1))*transXaxis(a(j,1));
                 MatrizParcial=T;
-                MatrizInterm=T;
-                %MatrizInterm(:,:,j)= T;
+                %MatrizInterm=T;
+                MatrizInterm(:,:,j)= T;
                 %Datos para graficar
 
 %                 X=T(1,4);
@@ -82,9 +82,9 @@ function [T,MatrizParcial,MatrizInterm] = GENDGM(sigma,a,alpha,d,theta,q)
                 %Matriz intermedia es 0T1-0T2-0T3 
                 %*siempre con la referenca*
                 %MatrizInterm=[MatrizInterm T];
-                %MatrizInterm(:,:,j)= T; %Esta es la parte que guarda las matrices
-                ans * T;
-                V{j}=ans; % Separacion de los Datos de posicion de la Matriz y plot
+                MatrizInterm(:,:,j)= T; %Esta es la parte que guarda las matrices
+                %ans * T;
+                %V{j}=ans; % Separacion de los Datos de posicion de la Matriz y plot
                 %Datos para graficar
 %                 X=[X T(1,4)];
 %                 Y=[Y T(2,4)];
@@ -105,16 +105,16 @@ function [T,MatrizParcial,MatrizInterm] = GENDGM(sigma,a,alpha,d,theta,q)
             end
             j=j+1;
         end
-       junta1x=V{1}(1,4)
-       junta1y=V{1}(2,4)
-       junta1z=V{1}(3,4)
-       junta2x=V{2}(1,4)
-       junta2y=V{2}(2,4)
-       junta2z=V{2}(3,4)
-       junta3x=V{3}(1,4)
-       junta3z=V{3}(2,4)
-       junta3z=V{3}(3,4)
-       X=[junta1x, junta2x, junta3x; junta1y, junta2y, junta3y; junta1z, junta2z, junta3z]
+%        junta1x=V{1}(1,4)
+%        junta1y=V{1}(2,4)
+%        junta1z=V{1}(3,4)
+%        junta2x=V{2}(1,4)
+%        junta2y=V{2}(2,4)
+%        junta2z=V{2}(3,4)
+%        junta3x=V{3}(1,4)
+%        junta3z=V{3}(2,4)
+%        junta3z=V{3}(3,4)
+%        X=[junta1x, junta2x, junta3x; junta1y, junta2y, junta3y; junta1z, junta2z, junta3z]
 
     end
 end
