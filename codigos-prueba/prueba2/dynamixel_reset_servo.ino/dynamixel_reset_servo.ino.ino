@@ -24,7 +24,8 @@ void setup(){
 
   pinMode(13,OUTPUT); 
   Dynamixel.begin(1000000,2); // Testing. 
-
+  Dynamixel.setID(1,2);      
+  delay(1000);
 } 
 
  
@@ -37,20 +38,20 @@ void loop(){
 
   digitalWrite(13,ON); 
 
-  Dynamixel.move(1,100);  // Move the Servo 0 GRADOS
+  Dynamixel.move(2,100);  // Move the Servo 0 GRADOS
 
   delay(1000); 
 
-  Dynamixel.move(1,355);  // Move the Servo 100
-
-  delay(1000); 
-  
-  Dynamixel.move(1,612);  // Move the Servo 
+  Dynamixel.move(2,355);  // Move the Servo 100
 
   delay(1000); 
   
-  Dynamixel.move(1,800);  // Move the Servo 
+  Dynamixel.move(2,612);  // Move the Servo 
 
   delay(1000); 
+  
+ /* Dynamixel.move(2,800);  // Move the Servo 
+
+  delay(1000); */
 
 } 

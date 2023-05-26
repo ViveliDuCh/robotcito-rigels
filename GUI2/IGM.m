@@ -17,8 +17,8 @@ Z2 = PZ-L1;
 
 C3A = (Z1A^2 + Z2^2 - X^2 - Y^2)/(2*X*Y);
 S3A = sqrt(1-C3A^2);
-q3A = atan2(real(S3A), C3A);
-q3AP = atan2(real(-S3A), C3A);
+q3A = atan2(S3A, C3A);
+q3AP = atan2(-S3A, C3A);
 
 %Obtencion de q2A con q3A
 B1q3A = X+Y*cos(q3A); 
@@ -39,8 +39,8 @@ Z2 = PZ-L1;
 
 C3B = (Z1B^2 + Z2^2 - X^2 - Y^2)/(2*X*Y);
 S3B = sqrt(1-C3B^2);
-q3B = atan2(real(S3B), C3B);
-q3BP = atan2(real(-S3B), C3B);
+q3B = atan2(S3B, C3B);
+q3BP = atan2(-S3B, C3B);
 
 %Obtencion de q2B con q3B
 B1q3B = X+Y*cos(q3B);
@@ -55,10 +55,10 @@ S2q3BP = (B1q3BP*Z2 + B2q3BP*Z1B)/(B1q3BP^2 + B2q3BP^2);
 C2q3BP = (B1q3BP*Z1B - B2q3BP*Z2)/(B1q3BP^2 + B2q3BP^2);
 q2BP = atan2(S2q3BP, C2q3BP);%--------------------------q2
 
-S(:,:,1) = [q1A q2A q3A];
-S(:,:,2) = [q1A q2AP q3AP];
-S(:,:,3) = [q1B q2B q3B];
-S(:,:,4) = [q1B q2BP q3BP];
+S(:,:,1) = [q1A q2A q3A]
+S(:,:,2) = [q1A q2AP q3AP]
+S(:,:,3) = [q1B q2B q3B]
+S(:,:,4) = [q1B q2BP q3BP]
 
 x = length(S);
 j = 0;

@@ -1,6 +1,6 @@
 #include <DynamixelSerial1.h> 
 
-#define ID 1 //CHANGE THIS VALUE TO YOUR SERVO ID; Use 254 to talk to any servo, every servo should have its own specific ID though. 
+#define ID 2 //CHANGE THIS VALUE TO YOUR SERVO ID; Use 254 to talk to any servo, every servo should have its own specific ID though. 
 
 #define FREQ 1000000 // The baud rate to communicate with the servo,  
 
