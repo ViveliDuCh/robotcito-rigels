@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 function [Salida, S_label,allSol] = IGM(PX,PY,PZ)
+=======
+function [S1,S2,S3,S4] = IGM(PX,PY,PZ)
+>>>>>>> 0287c397ab8541cc9eb47860c7e880a02bd4a7bc
 L1 = 25.5;
 L2 = 88.1;
 L3 = 153.59;
@@ -12,7 +16,11 @@ X = L2;
 Y = L3;
 
 % Primera combinacion de Q1A Y Q3 Y Q2
+<<<<<<< HEAD
 Z1A = PX*cos(q1A)+PY*sin(q1A); 
+=======
+Z1A = PX*cos(q1A)+PY*sin(q1A);
+>>>>>>> 0287c397ab8541cc9eb47860c7e880a02bd4a7bc
 Z2 = PZ-L1;
 
 C3A = (Z1A^2 + Z2^2 - X^2 - Y^2)/(2*X*Y);
@@ -55,6 +63,7 @@ S2q3BP = (B1q3BP*Z2 + B2q3BP*Z1B)/(B1q3BP^2 + B2q3BP^2);
 C2q3BP = (B1q3BP*Z1B - B2q3BP*Z2)/(B1q3BP^2 + B2q3BP^2);
 q2BP = atan2(S2q3BP, C2q3BP);%--------------------------q2
 
+<<<<<<< HEAD
 S(:,:,1) = [q1A q2A q3A]
 S(:,:,2) = [q1A q2AP q3AP]
 S(:,:,3) = [q1B q2B q3B]
@@ -124,5 +133,12 @@ q =     S(:,:,2);
 theta = [q(1) q(2) q(3)];
 T = GENDGM(sigma,a,alpha,d,theta,q)
 
+=======
+
+S1 = [q1A q2A q3A]
+S2 = [q1A q2AP q3AP]
+S3 = [q1B q2B q3B]
+S4 = [q1B q2BP q3BP]
+>>>>>>> 0287c397ab8541cc9eb47860c7e880a02bd4a7bc
 
 end
