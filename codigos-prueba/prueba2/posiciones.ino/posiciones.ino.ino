@@ -42,6 +42,9 @@ void setup(){
 
  
 
+
+
+
 void loop(){ 
 
   // Be patient it can take a while; you will know when it is finished  
@@ -50,29 +53,8 @@ void loop(){
 
   digitalWrite(13,ON); 
 
-  //Make the servo move from 0 to 300° 
-
-  // If the change was successful the servo will move.  
-
-  digitalWrite(13,ON); 
-
-  Dynamixel.move(2,0);  // Move the Servo 0 GRADOS
+  Dynamixel.move(2,random(200,800)); 
 
   delay(1000); 
 
-  Dynamixel.move(2,255);  // Move the Servo 100 - con regla de 3
-  
-
-  delay(1000); 
-  
-  Dynamixel.move(2,512);  // Move the Servo 
-
-  delay(1000); 
-  
-  Dynamixel.move(2,1023);  // Move the Servo 
-
-  delay(1000); 
-
-}  
-
- 
+}

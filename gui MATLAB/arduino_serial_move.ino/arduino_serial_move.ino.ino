@@ -132,9 +132,12 @@ void showPositionData() {
 void moveServo(int angle1, int angle2, int angle3) { 
   //Angle must be a value between 0 and 1023 (0°-300°)
   //Cambio de grados a posiciones:
-  Theta1F = map(theta1,0,180,1023,400); //Rango de 0 a 180
+/*  Theta1F = map(theta1,0,180,1023,400); //Rango de 0 a 180
   Theta2F = map(theta2,0,90,400,695); //Rango de 0 a 90
-  Theta3F = map(theta3,0,180,590,280); //Rango de 0 a 90
+  Theta3F = map(theta3,0,180,590,280); //Rango de 0 a 180*/
+  Theta1F = map(theta1,180,0,400,1023); //Rango de 0 a 180
+  Theta2F = map(theta2,0,180,390,990); //Rango de 0 a 90 695 estos son los originales
+  Theta3F = map(theta3,0,180,265,893); //Rango de 0 a 180 590 estos son los originales
   Dynamixel.move(ID_theta1,Theta1F);  // Move the Servo(ID), to 0° = 0 
   Dynamixel.move(ID_theta2,Theta2F);  // Move the Servo(ID), to 0° = 0 
   Dynamixel.move(ID_theta3,Theta3F);  // Move the Servo(ID), to 0° = 0 
