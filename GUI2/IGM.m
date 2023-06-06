@@ -1,4 +1,4 @@
-function [Salida, S_label] = IGM(PX,PY,PZ)
+function [Salida, S_label,allSol] = IGM(PX,PY,PZ)
 L1 = 25.5;
 L2 = 88.1;
 L3 = 153.59;
@@ -12,7 +12,7 @@ X = L2;
 Y = L3;
 
 % Primera combinacion de Q1A Y Q3 Y Q2
-Z1A = PX*cos(q1A)+PY*sin(q1A);
+Z1A = PX*cos(q1A)+PY*sin(q1A); 
 Z2 = PZ-L1;
 
 C3A = (Z1A^2 + Z2^2 - X^2 - Y^2)/(2*X*Y);
@@ -72,7 +72,9 @@ for j = 1:x
     end
     S(:,:,j) = Sp;
 end
-S
+
+allSol = S;
+
 j_salida=2;
 q1_limit = pi;
 q2_limit = pi;
@@ -89,7 +91,7 @@ for j = 1:x
     if(Sp(2)<0 || Sp(2)>q2_limit)
         continue %se sale de esta vuelta del loop sin checar nada m[as
     end
-    if(Sp(3)<0 || Sp(3)>q3_limit)
+    if(Sp(3)<0 || (Sp(3)+pi/2)>q3_limit)
         continue %se sale de esta vuelta del loop sin checar nada m[as
     end
     %Es +1 para que se salte los 0 del label "Selecciona"
