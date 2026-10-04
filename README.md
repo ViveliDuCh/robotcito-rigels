@@ -1,5 +1,5 @@
 # robotcito-rigels
-robotcito uwu 
+robotic arm controller app with DH direct and inverse transformation
 
 
 Notas pa la progra Vivi:
